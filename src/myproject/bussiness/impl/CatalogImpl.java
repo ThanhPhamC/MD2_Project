@@ -1,20 +1,35 @@
 package myproject.bussiness.impl;
 
-import myproject.bussiness.design.ILibrary;
+
+import myproject.bussiness.design.ICatalog;
 import myproject.bussiness.entity.Catalog;
-import myproject.bussiness.mess.CheckValidate;
-import myproject.bussiness.mess.Message;
-import myproject.data.DataUrl;
+import static myproject.bussiness.mess.CheckValidate.*;
+import myproject.data.WriteAndReadData;
+import static myproject.bussiness.mess.Message.*;
+import static myproject.data.ConstantRegexAndUrl.*;
+import java.util.*;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+public class CatalogImpl implements ICatalog<Catalog, String>, Comparator<Catalog> {
+    public static WriteAndReadData writeAndReadData = new WriteAndReadData();
 
-public class CatalogImpl implements ILibrary<Catalog, String> {
     @Override
-    public boolean create(Catalog catalog) {
-        List<Catalog> catalogList = readFormFile();
+    public List<Catalog> sortbyName() {                                 //1. sort by name
+        List<Catalog> catalogList = readFromFile();
+        if (catalogList == null) {
+            catalogList = new ArrayList<>();
+        }
+        Collections.sort(catalogList, new Comparator<Catalog>() {
+            @Override
+            public int compare(Catalog o1, Catalog o2) {
+                return o1.getCatalogName().compareTo(o2.getCatalogName());
+            }
+        });
+        return catalogList;
+    }
+
+    @Override
+    public boolean create(Catalog catalog) {                                // 2. creat catalog
+        List<Catalog> catalogList = readFromFile();
         if (catalogList == null) {
             catalogList = new ArrayList<>();
         }
@@ -24,8 +39,8 @@ public class CatalogImpl implements ILibrary<Catalog, String> {
     }
 
     @Override
-    public boolean update(Catalog catalog) {
-        List<Catalog> catalogList = readFormFile();
+    public boolean update(Catalog catalog) {                    // 3. update catalog
+        List<Catalog> catalogList = readFromFile();
         if (catalogList == null) {
             return false;
         } else {
@@ -45,10 +60,9 @@ public class CatalogImpl implements ILibrary<Catalog, String> {
             }
         }
     }
-
     @Override
-    public boolean delete(String name) {
-        List<Catalog> catalogList = readFormFile();
+    public boolean delete(String name) {                          // 4. delete catalog( update status)
+        List<Catalog> catalogList = readFromFile();
         boolean check = false;
         for (Catalog catalog : catalogList) {
             if (catalog.getCatalogName().equals(name)) {
@@ -60,89 +74,47 @@ public class CatalogImpl implements ILibrary<Catalog, String> {
         boolean result = writeToFile(catalogList);
         if (result && check) {
             return true;
-        } else return false;
-    }
-
-    @Override
-    public Catalog findbyName(String name) {
-        List<Catalog> catalogList = readFormFile();
-        for (Catalog catalog : catalogList) {
-            if (catalog.getCatalogName().equals(name)) {
-                return catalog;
-            }
+        } else {
+            return false;
         }
-        return null;
+    }
+    @Override
+    public boolean writeToFile(List<Catalog> list) {                             // 5. write file
+        return writeAndReadData.writeToFile(list,URL_CATALOG);
     }
 
     @Override
-    public boolean writeToFile(List<Catalog> litst) {
-        File file = null;
-        FileOutputStream fos = null;
-        ObjectOutputStream oos = null;
-        boolean check = true;
-        try {
-            file = new File(DataUrl.Url_Catalog);
-            fos = new FileOutputStream(file);
-            oos = new ObjectOutputStream(fos);
-        } catch (Exception ex) {
-            check = false;
-            ex.printStackTrace();
-        } finally {
-            try {
-                if (fos != null) {
-                    fos.close();
-                }
-                if (fos != null) {
-                    oos.close();
-                }
-            } catch (Exception ex2) {
-                ex2.printStackTrace();
-            }
-        }
-        return check;
-    }
-
-    @Override
-    public List<Catalog> readFormFile() {
-        List<Catalog> catalogList = new ArrayList<>();
-        File file = null;
-        FileInputStream fis = null;
-        ObjectInputStream ois = null;
-        try {
-            file = new File(DataUrl.Url_Catalog);
-            if (file.exists()) {
-                fis = new FileInputStream(file);
-                ois = new ObjectInputStream(fis);
-                catalogList = (List<Catalog>) ois.readObject();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            try {
-                if (fis != null) {
-                    fis.close();
-                }
-                if (ois != null) {
-                    ois.close();
-                }
-            } catch (Exception ex1) {
-                ex1.printStackTrace();
-            }
+    public List<Catalog> readFromFile() {                                         // 6. read file
+        List<Catalog> catalogList=writeAndReadData.readFormFile(URL_CATALOG);
+        if (catalogList==null){
+            catalogList=new ArrayList<>();
         }
         return catalogList;
     }
 
     @Override
+    public List<Catalog> findbyName(String name) {                  //7. find catalog by name
+        List<Catalog> catalogList = readFromFile();
+        List<Catalog> catalogListByName = new ArrayList<>();
+        for (Catalog catalog : catalogList) {
+            if (catalog.getCatalogName().contains(name)) {
+                catalogListByName.add(catalog);
+            }
+        }
+        return catalogListByName;
+    }
+
+    @Override
     public Catalog inputData(Scanner sc) {
-        List<Catalog> catalogList = readFormFile();
+        List<Catalog> catalogList = readFromFile();
         if (catalogList == null) {
             catalogList = new ArrayList<>();
         }
         Catalog catalog = new Catalog();
         catalog.setCatalogId(catalogList.size() + 1);
         do {
-            System.out.println(Message.INPUTNAME);
-            catalog.setCatalogName(CheckValidate.nameValidate(sc));
+            System.out.println(INPUTNAME);
+            catalog.setCatalogName(strValidate(sc,REGEXNAME ));
             boolean check = false;
             for (Catalog cat : catalogList) {
                 if (cat.getCatalogName().equals(catalog.getCatalogName())) {
@@ -151,34 +123,38 @@ public class CatalogImpl implements ILibrary<Catalog, String> {
                 }
             }
             if (check) {
-                System.out.println(Message.NAMEERROR1);
+                System.out.println(NAMEERROR1);
             } else {
                 break;
             }
         } while (true);
-        System.out.println(Message.INPUTSTATUS);
-        System.out.println(Message.INPUTCHOICESTATUS);
-        int choice = CheckValidate.choiceNumber(sc, 1, 2);
-        if (choice == 1) {
-            catalog.setCatalogStatus(true);
-        } else {
-            catalog.setCatalogStatus(false);
+        System.out.println(INPUTSTATUS);
+        System.out.println("1."+STATUS1+"       2."+STATUS3);
+        int choice = choiceNumber(sc, 1, 2);
+        switch (choice){
+            case 1:catalog.setCatalogStatus(true);break;
+            case 2:catalog.setCatalogStatus(false);break;
         }
         return catalog;
     }
+
     @Override
     public void displayData() {
-        List<Catalog> catalogList = readFormFile();
-        String status= "Hoạt động";
-        if (catalogList==null){
-            System.out.println(Message.ERRORNULL);
-        }else {
-            for (Catalog catalog:catalogList) {
-                if (!catalog.isCatalogStatus()){
-                    status="Không hoạt động.";
+        List<Catalog> catalogList = sortbyName();
+        String status = STATUS1;
+        if (catalogList == null) {
+            System.out.println(ERRORNULL);
+        } else {
+            for (Catalog catalog : catalogList) {
+                if (!catalog.isCatalogStatus()) {
+                    status = STATUS3;
                 }
-                System.out.printf("%d%s%s",catalog.getCatalogId(),catalog.getCatalogName(),status);
+                System.out.printf("%d - %s - %s", catalog.getCatalogId(), catalog.getCatalogName(),status);
             }
         }
+    }
+    @Override
+    public int compare(Catalog o1, Catalog o2) {
+        return 0;
     }
 }

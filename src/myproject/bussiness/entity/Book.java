@@ -1,22 +1,24 @@
 package myproject.bussiness.entity;
 
+import myproject.bussiness.mess.Message;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Book implements Serializable {
-    private int bookId;
+    private String bookId;
     private String bookName;
     private int bookquantity;
     private Catalog catalog;
-    private ArrayList<String> listAuthor=new ArrayList<>();
+    private ArrayList<String> listAuthor = new ArrayList<>();
     private String bookStates;
-    private boolean bookStatus;
+    private String bookStatus;
+
 
     public Book() {
     }
 
-    public Book(int bookId, String bookName, int bookquantity, Catalog catalog,
-                ArrayList<String> listAuthor, String bookStates, boolean bookStatus) {
+    public Book(String bookId, String bookName, int bookquantity, Catalog catalog, ArrayList<String> listAuthor, String bookStates, String bookStatus) {
         this.bookId = bookId;
         this.bookName = bookName;
         this.bookquantity = bookquantity;
@@ -26,11 +28,11 @@ public class Book implements Serializable {
         this.bookStatus = bookStatus;
     }
 
-    public int getBookId() {
+    public String getBookId() {
         return bookId;
     }
 
-    public void setBookId(int bookId) {
+    public void setBookId(String bookId) {
         this.bookId = bookId;
     }
 
@@ -48,6 +50,11 @@ public class Book implements Serializable {
 
     public void setBookquantity(int bookquantity) {
         this.bookquantity = bookquantity;
+        if (bookquantity==0){
+            this.bookStatus= Message.STATUS3;
+        }else {
+            this.bookStatus=Message.STATUS1;
+        }
     }
 
     public Catalog getCatalog() {
@@ -74,11 +81,14 @@ public class Book implements Serializable {
         this.bookStates = bookStates;
     }
 
-    public boolean isBookStatus() {
+    public String getBookStatus() {
         return bookStatus;
     }
 
-    public void setBookStatus(boolean bookStatus) {
-        this.bookStatus = bookStatus;
-    }
+    public void setBookStatus(String bookStatus) {
+
+            this.bookStatus = bookStatus;
+        }
+
+
 }
