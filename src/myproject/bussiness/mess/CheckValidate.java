@@ -7,6 +7,7 @@ import myproject.bussiness.entity.Catalog;
 import myproject.bussiness.entity.User;
 import myproject.bussiness.impl.BookImpl;
 import myproject.bussiness.impl.CatalogImpl;
+import myproject.bussiness.impl.LibraryBookCardImpl;
 import myproject.bussiness.impl.UserImpl;
 import myproject.data.WriteAndReadData;
 import myproject.run.BookManagement;
@@ -152,7 +153,7 @@ public class CheckValidate {
                             }
                         }
                         if (check) {
-                            System.out.println("Sách đã được thêm vào thẻ mượn.");
+                            System.out.println("Sách đã có trong thẻ mượn, hãy thêm sách khác.");
                             break;
                         } else {
                             bookListReturn.add(book);
@@ -174,9 +175,10 @@ public class CheckValidate {
         return (ArrayList<Book>) bookListReturn;
     }
     public static User userForCard(Scanner sc){
+        LibraryBookCardImpl lbCardImpl=new LibraryBookCardImpl();
         User user =new User();
         UserImpl userImpl=new UserImpl();
-        List<User> userList=userImpl.readFromFile();
+        List<User> userList=lbCardImpl.userStatus();
         do {
             for (User user1:userList) {
                 if (user1.isUserStatus()){

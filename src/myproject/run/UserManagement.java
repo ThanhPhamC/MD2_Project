@@ -1,5 +1,7 @@
 package myproject.run;
 
+import myproject.bussiness.impl.UserImpl;
+
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -8,6 +10,7 @@ import static myproject.data.ConstandDesign.*;
 
 
 public class UserManagement {
+    public static UserImpl userImpl =new UserImpl();
     public static void displayUser(Scanner sc){
         boolean checkout = true;
         do {
@@ -37,6 +40,7 @@ public class UserManagement {
     }
     public static void showListUser(Scanner sc){
         System.out.println(SHOWLISTUSER);
+        userImpl.displayData();
     }
     public static void addNewUser(Scanner sc){
         System.out.println(ADDUSER);

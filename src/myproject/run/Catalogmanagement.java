@@ -98,7 +98,7 @@ public class Catalogmanagement {
     public static void searchByName(Scanner sc) {                                //5 search by name
         System.out.println(SEARCHBYNAME);
         System.out.println("Nhập vào tên muốn tìm kiếm");
-        String catalogName = strValidate(sc, REGEXNAME);
+        String catalogName = strValidate(sc, REGEXFULLNAME);
         List<Catalog> catalogList = catalogImpl.findbyName(catalogName);
         if (catalogList == null) {
             System.out.printf("Catalog %s không có trong danh sách. ", catalogName); ///// sao no khong vao day????

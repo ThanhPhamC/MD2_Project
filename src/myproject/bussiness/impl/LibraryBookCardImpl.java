@@ -4,20 +4,18 @@ package myproject.bussiness.impl;
 import myproject.bussiness.design.ILibraryBookCard;
 import myproject.bussiness.entity.Book;
 import myproject.bussiness.entity.LibraryBookCard;
+import myproject.bussiness.entity.User;
 import myproject.data.WriteAndReadData;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 import static myproject.bussiness.mess.CheckValidate.*;
 import static myproject.bussiness.mess.Message.*;
 import static myproject.data.ConstantRegexAndUrl.*;
 
-public class LibraryBookCardImpl implements ILibraryBookCard<LibraryBookCard, String> {
+public class LibraryBookCardImpl implements ILibraryBookCard<LibraryBookCard, String>,Comparator<LibraryBookCard> {
     public static WriteAndReadData writeAndReadData = new WriteAndReadData();
 
     @Override
@@ -69,15 +67,16 @@ public class LibraryBookCardImpl implements ILibraryBookCard<LibraryBookCard, St
                     for (int i = 0; i < bookList.size(); i++) {
                         if (book.getBookId().equals(bookList.get(i).getBookId())) {
                             bookList.get(i).setBookquantity(bookList.get(i).getBookquantity() + 1);
+                            bookImpl.writeToFile(bookList);
                         }
                     }
                 }
-                lbcard.setLibraryBookCardStatus(LBCARDSTATUS3);
+                Date date = new Date();
+                lbcard.setActualReturnDate(date);
                 check = true;
                 break;
             }
         }
-        bookImpl.writeToFile(bookList);
         boolean result = writeToFile(libraryBookCardList);
         if (result && check) {
             return true;
@@ -102,7 +101,7 @@ public class LibraryBookCardImpl implements ILibraryBookCard<LibraryBookCard, St
 
     @Override
     public List<LibraryBookCard> findbyName(String name) {                       //6. find by name
-        List<LibraryBookCard> libraryBookCardList = readFromFile();
+        List<LibraryBookCard> libraryBookCardList = updateStatus();
         if (libraryBookCardList == null) {
             libraryBookCardList = new ArrayList<>();
         }
@@ -139,6 +138,34 @@ public class LibraryBookCardImpl implements ILibraryBookCard<LibraryBookCard, St
 
     @Override
     public void displayData() {                                                     //8 display data
+        Scanner sc = new Scanner(System.in);
+        List<LibraryBookCard> libraryBookCardList = updateStatus();
+        Collections.sort(libraryBookCardList, new Comparator<LibraryBookCard>() {
+            @Override
+            public int compare(LibraryBookCard o1, LibraryBookCard o2) {
+                return o1.getReturnDate().compareTo(o2.getReturnDate());
+            }
+        });
+        for (LibraryBookCard lbCard : libraryBookCardList) {
+            String actualReturnDate = "Chưa trả.";
+            DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+            if (lbCard.getActualReturnDate() != null) {
+                actualReturnDate = df.format(lbCard.getActualReturnDate());
+            }
+            String borrowDay = df.format(lbCard.getBorrowDate());
+            String returnDay = df.format(lbCard.getReturnDate());
+            System.out.printf("|   1.MÃ THẺ: %-5d    2.TÊN THẺ: %-18s      3.NGƯỜI MƯỢN: %-20s      4.TRẠNG THÁI: %-10s |\n" +
+                            "|   5.NGÀY MƯỢN: %-10s                               6.NGÀY TRẢ: %-10s            7.NGÀY TRẢ THỰC TẾ: %-10s |\n"
+                    ,
+                    lbCard.getLibraryBookCardId(), lbCard.getLibraryBookCardName(), lbCard.getUser().getUserName(), lbCard.getLibraryBookCardStatus(), borrowDay, returnDay, actualReturnDate);
+            for (Book book : lbCard.getBookArrayList()) {
+                System.out.printf("|   8.DANH SÁCH SÁCH MƯỢN: %-80s                |\n" +
+                        "+--------------------------------------------------------------------------------------------------------------------------+\n", book.getBookName());
+            }
+        }
+    }
+
+    public List<LibraryBookCard> updateStatus() {                      //9 update status for all card.
         Date currentDay = new Date();
         List<LibraryBookCard> libraryBookCardList = readFromFile();
         for (LibraryBookCard lbCard : libraryBookCardList) {
@@ -152,23 +179,10 @@ public class LibraryBookCardImpl implements ILibraryBookCard<LibraryBookCard, St
                     lbCard.setLibraryBookCardStatus(LBCARDSTATUS2);
                 }
             }
-            String actualReturnDate = "Chưa trả.";
-            DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-            if (lbCard.getActualReturnDate() != null) {
-                actualReturnDate = df.format(lbCard.getActualReturnDate());
-            }
-            String borrowDay = df.format(lbCard.getBorrowDate());
-            String returnDay = df.format(lbCard.getReturnDate());
-                System.out.printf("|   1.MÃ THẺ: %-5d    2.TÊN THẺ: %-18s      3.NGƯỜI MƯỢN: %-20s       4.TRẠNG THÁI: %-10s|\n" +
-                                  "|   5.NGÀY MƯỢN: %-10s                               6.NGÀY TRẢ: %-10s             7.NGÀY TRẢ THỰC TẾ: %-10s|\n"
-                    ,
-                    lbCard.getLibraryBookCardId(), lbCard.getLibraryBookCardName(), lbCard.getUser().getUserName(), lbCard.getLibraryBookCardStatus(), borrowDay, returnDay, actualReturnDate);
-            for (Book book : lbCard.getBookArrayList()) {
-                System.out.printf("|   8.DANH SÁCH SÁCH MƯỢN: %-80s                |\n" +
-                                  "+--------------------------------------------------------------------------------------------------------------------------+\n",book.getBookName());
-            }
         }
+        return libraryBookCardList;
     }
+
 
     @Override
     public List<LibraryBookCard> searchByUserId(int id) {                          //9. search by user id
@@ -183,5 +197,29 @@ public class LibraryBookCardImpl implements ILibraryBookCard<LibraryBookCard, St
             }
         }
         return lbCardById;
+    }
+
+    public List<User> userStatus() {                                // update user stt
+        UserImpl userImpl = new UserImpl();
+        List<User> userList = userImpl.readFromFile();
+        List<LibraryBookCard> libraryBookCardList = updateStatus();
+        for (User user : userList) {
+            int count = 0;
+            for (LibraryBookCard lbCard : libraryBookCardList) {
+                if (user.getUserName().equals(lbCard.getUser().getUserName()) && lbCard.getLibraryBookCardStatus().equals(LBCARDSTATUS3)) {
+                    count++;
+                }
+            }
+            if (count >= 3) {
+                user.setUserStatus(false);
+            }
+        }
+        return userList;
+    }
+
+
+    @Override
+    public int compare(LibraryBookCard o1, LibraryBookCard o2) {
+        return o1.getReturnDate().compareTo(o2.getReturnDate());
     }
 }

@@ -138,6 +138,7 @@ public class UserImpl implements IUser<User, String> {
         user.setUserEmail(strValidate(sc, REGEXEMAIL));
         ///thieu dia chi nua :(((((
         System.out.print(ADDRESS);
+        user.setUserAdress(sc.nextLine());
         System.out.print(LBCARDSTART);
         user.setLibraryCardStartDay(dateValidate(sc));
         Date date = user.getLibraryCardStartDay();
@@ -180,7 +181,8 @@ public class UserImpl implements IUser<User, String> {
 
     @Override
     public void displayData() {
-        List<User> userList = readFromFile();
+        LibraryBookCardImpl lbCardImpl=new LibraryBookCardImpl();
+        List<User> userList = lbCardImpl.userStatus();
         if (userList == null) {
             System.out.println(ERRORNULL);
         } else {
@@ -192,8 +194,9 @@ public class UserImpl implements IUser<User, String> {
                 DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
                 String startDay = df.format(user.getLibraryCardStartDay());
                 String endDay = df.format(user.getLibraryCardEndDay());
+
                 System.out.printf("%d - %s - %d - %s - %s - %s - %s - %s", user.getUserId(), user.getUserName(), user.getPhonenumber(), user.getUserEmail(),
-                        user.getUserAdress(), startDay, endDay.toString(), status);
+                        user.getUserAdress(), startDay, endDay, status);
             }
         }
 
