@@ -2,16 +2,34 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f0ab2519-eccc-4b2b-b78a-dc2537d8ac04" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/myproject/bussiness/design/ILibrary.java" beforeDir="false" afterPath="$PROJECT_DIR$/myproject/bussiness/design/ILibrary.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/TongHopMD2/myproject/bussiness/impl/BookImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/../out/production/TongHopMD2/myproject/bussiness/impl/BookImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/TongHopMD2/myproject/bussiness/impl/CatalogImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/../out/production/TongHopMD2/myproject/bussiness/impl/CatalogImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/TongHopMD2/myproject/bussiness/impl/UserImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/../out/production/TongHopMD2/myproject/bussiness/impl/UserImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/TongHopMD2/myproject/bussiness/mess/CheckValidate.class" beforeDir="false" afterPath="$PROJECT_DIR$/../out/production/TongHopMD2/myproject/bussiness/mess/CheckValidate.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/TongHopMD2/myproject/bussiness/mess/Message.class" beforeDir="false" afterPath="$PROJECT_DIR$/../out/production/TongHopMD2/myproject/bussiness/mess/Message.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/TongHopMD2/myproject/data/Book.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/TongHopMD2/myproject/data/Catalog.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../out/production/TongHopMD2/myproject/data/Catalog.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/TongHopMD2/myproject/data/ConstantRegexAndUrl.class" beforeDir="false" afterPath="$PROJECT_DIR$/../out/production/TongHopMD2/myproject/data/ConstantRegexAndUrl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/TongHopMD2/myproject/data/User.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../out/production/TongHopMD2/myproject/data/User.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/TongHopMD2/myproject/run/Catalogmanagement.class" beforeDir="false" afterPath="$PROJECT_DIR$/../out/production/TongHopMD2/myproject/run/Catalogmanagement.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/TongHopMD2/myproject/run/LibraryManagement.class" beforeDir="false" afterPath="$PROJECT_DIR$/../out/production/TongHopMD2/myproject/run/LibraryManagement.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/myproject/bussiness/design/ILibraryBookCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/myproject/bussiness/design/ILibraryBookCard.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/myproject/bussiness/entity/Book.java" beforeDir="false" afterPath="$PROJECT_DIR$/myproject/bussiness/entity/Book.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/myproject/bussiness/entity/LibraryBookCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/myproject/bussiness/entity/LibraryBookCard.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/myproject/bussiness/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/myproject/bussiness/entity/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/myproject/bussiness/impl/BookImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/myproject/bussiness/impl/BookImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/myproject/bussiness/impl/CatalogImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/myproject/bussiness/impl/CatalogImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/myproject/bussiness/impl/LibraryBookCardImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/myproject/bussiness/impl/LibraryBookCardImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/myproject/bussiness/impl/UserImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/myproject/bussiness/impl/UserImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/myproject/bussiness/mess/CheckValidate.java" beforeDir="false" afterPath="$PROJECT_DIR$/myproject/bussiness/mess/CheckValidate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/myproject/data/DataUrl.java" beforeDir="false" afterPath="$PROJECT_DIR$/myproject/data/DataUrl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/myproject/bussiness/mess/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/myproject/bussiness/mess/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/myproject/data/Book.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/myproject/data/Catalog.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/myproject/data/ConstantRegexAndUrl.java" beforeDir="false" afterPath="$PROJECT_DIR$/myproject/data/ConstantRegexAndUrl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/myproject/data/User.txt" beforeDir="false" afterPath="$PROJECT_DIR$/myproject/data/User.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/myproject/run/Catalogmanagement.java" beforeDir="false" afterPath="$PROJECT_DIR$/myproject/run/Catalogmanagement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/myproject/run/LibraryManagement.java" beforeDir="false" afterPath="$PROJECT_DIR$/myproject/run/LibraryManagement.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,20 +39,23 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="ProjectId" id="2GQwytW8aVHpowYmMJRWeDRbP09" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/Users/phamthanh/Desktop/JaVa/MD2_Project/src"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/phamthanh/Desktop/JaVa/MD2_Project/src&quot;
   }
-}]]></component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -44,6 +65,7 @@
       <option name="presentableId" value="Default" />
       <updated>1666334373072</updated>
       <workItem from="1666334374466" duration="34000" />
+      <workItem from="1666440101094" duration="29420000" />
     </task>
     <servers />
   </component>
@@ -60,5 +82,16 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_202.jdk/Contents/Home/src.zip!/java/lang/Override.java</url>
+          <line>48</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

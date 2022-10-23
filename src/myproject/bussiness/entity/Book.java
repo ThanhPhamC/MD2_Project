@@ -49,9 +49,10 @@ public class Book implements Serializable {
     }
 
     public void setBookquantity(int bookquantity) {
+
         this.bookquantity = bookquantity;
-        if (bookquantity==0){
-            this.bookStatus= Message.STATUS3;
+        if (this.bookquantity==0){
+            this.bookStatus= Message.STATUS2;
         }else {
             this.bookStatus=Message.STATUS1;
         }
@@ -63,6 +64,9 @@ public class Book implements Serializable {
 
     public void setCatalog(Catalog catalog) {
         this.catalog = catalog;
+        if (!catalog.isCatalogStatus()){
+            this.bookStatus=Message.STATUS3;
+        }
     }
 
     public ArrayList<String> getListAuthor() {

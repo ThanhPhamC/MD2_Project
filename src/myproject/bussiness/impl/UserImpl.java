@@ -9,6 +9,8 @@ import static myproject.bussiness.mess.CheckValidate.*;
 import static myproject.bussiness.mess.Message.*;
 import static myproject.data.ConstantRegexAndUrl.*;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class UserImpl implements IUser<User, String> {
@@ -102,14 +104,14 @@ public class UserImpl implements IUser<User, String> {
         }
         User user = new User();
         user.setUserId(userList.size() + 1);
-        System.out.println(INPUTNAME);
+        System.out.print(INPUTNAME);
         user.setUserName(strValidate(sc, REGEXFULLNAME));
         do {
-            System.out.println("Tên đăng nhập");
+            System.out.print(USERNAMELOGIN);
             user.setUserLogin(strValidate(sc, REGEXNAME));
             boolean check = false;
             for (User user1 : userList) {
-                if (user1.getUserLogin().equals(user.getUserName())) {
+                if (user1.getUserLogin().equals(user.getUserLogin())) {
                     check = true;
                     break;
                 }
@@ -119,35 +121,44 @@ public class UserImpl implements IUser<User, String> {
             } else break;
         } while (true);
         do {
-            System.out.println("Nhập mật khẩu: ");
+            System.out.print(USERPASS);
             user.setUserPass(strValidate(sc, REGEXPASS));
-            System.out.println("Nhập lại mật khẩu");
-            user.setComfirmUserPass(strValidate(sc,REGEXPASS));
-            if (user.getUserPass().matches(user.getComfirmUserPass())){
+            System.out.print("* Nhập lại mật khẩu: ");
+            user.setComfirmUserPass(strValidate(sc, REGEXPASS));
+            if (user.getUserPass().matches(user.getComfirmUserPass())) {
                 break;
-            }else {
+            } else {
                 System.out.println("Không trùng khớp, nhập lại.");
             }
         } while (true);
-        System.out.println(PHONENUMBER);
+        System.out.print(PHONENUMBER);
         String phonenumber = strValidate(sc, REGEXPHONE);
         user.setPhonenumber(Integer.parseInt(phonenumber));
-        System.out.println(EMAIL);
+        System.out.print(EMAIL);
         user.setUserEmail(strValidate(sc, REGEXEMAIL));
         ///thieu dia chi nua :(((((
-        System.out.println(ADDRESS);
-        System.out.println(LBCARDSTART);
+        System.out.print(ADDRESS);
+        System.out.print(LBCARDSTART);
         user.setLibraryCardStartDay(dateValidate(sc));
-        System.out.println(LBCARDEND);
-        do {
-            user.setLibraryCardEndDay(dateValidate(sc));
-            int check = user.getLibraryCardStartDay().compareTo(user.getLibraryCardEndDay());
-            if (check < 0) {
+        Date date = user.getLibraryCardStartDay();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        System.out.print(LBCARDEND);
+        int choice1 = choiceNumber(sc, 1, 3);
+        switch (choice1) {
+            case 1:
+                calendar.roll(Calendar.MONTH, 3);
+                user.setLibraryCardEndDay(calendar.getTime());
                 break;
-            } else {
-                System.out.println(ERRORDATE);
-            }
-        } while (true);
+            case 2:
+                calendar.roll(Calendar.MONTH, 6);
+                user.setLibraryCardEndDay(calendar.getTime());
+                break;
+            case 3:
+                calendar.roll(Calendar.MONTH, 12);
+                user.setLibraryCardEndDay(calendar.getTime());
+                break;
+        }
         if (userList.size() == 0) {
             user.setPermission(true);
         } else {
@@ -166,6 +177,7 @@ public class UserImpl implements IUser<User, String> {
         }
         return user;
     }
+
     @Override
     public void displayData() {
         List<User> userList = readFromFile();
@@ -177,8 +189,11 @@ public class UserImpl implements IUser<User, String> {
                 if (!user.isUserStatus()) {
                     status = STATUS3;
                 }
+                DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+                String startDay = df.format(user.getLibraryCardStartDay());
+                String endDay = df.format(user.getLibraryCardEndDay());
                 System.out.printf("%d - %s - %d - %s - %s - %s - %s - %s", user.getUserId(), user.getUserName(), user.getPhonenumber(), user.getUserEmail(),
-                        user.getUserAdress(), user.getLibraryCardStartDay().toString(), user.getLibraryCardEndDay().toString(), status);
+                        user.getUserAdress(), startDay, endDay.toString(), status);
             }
         }
 

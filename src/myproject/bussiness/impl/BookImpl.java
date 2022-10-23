@@ -3,6 +3,8 @@ package myproject.bussiness.impl;
 
 import myproject.bussiness.design.ILibrary;
 import myproject.bussiness.entity.Book;
+import myproject.bussiness.entity.Catalog;
+import myproject.bussiness.entity.LibraryBookCard;
 import myproject.bussiness.mess.CheckValidate;
 import myproject.bussiness.mess.Message;
 
@@ -11,6 +13,7 @@ import myproject.data.WriteAndReadData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
 import static myproject.bussiness.mess.CheckValidate.*;
 import static myproject.bussiness.mess.Message.*;
 import static myproject.data.ConstantRegexAndUrl.*;
@@ -31,18 +34,51 @@ public class BookImpl implements ILibrary<Book, String> {
 
     @Override
     public boolean update(Book book) {                                       // 2. update book
+        Scanner sc = new Scanner(System.in);
         List<Book> bookList = readFromFile();
         if (bookList == null) {
             return false;
         } else {
             boolean check = false;
             for (int i = 0; i < bookList.size(); i++) {
-                if (bookList.get(i).getBookId().equals(book.getBookId()) ) {
+                if (bookList.get(i).getBookId().equals(book.getBookId())) {
+
+                    boolean checkname = false;
+                    for (Book book1 : bookList) {
+                        if (book1.getBookName().equals(book.getBookName()) && !book1.getBookId().equals(book.getBookId())) {
+                            checkname = true;
+                            break;
+                        }
+                    }
+                    if (checkname) {
+                        System.out.println("Tên đã tồn tại với 1 Id khác.\n" +
+                                "1. Sử dụng tên ban đầu của sách.     2.Nhập 1 tên khác.");
+                        int choice = choiceNumber(sc, 1, 2);
+                        switch (choice) {
+                            case 1:
+                                book.setBookName(bookList.get(i).getBookName());
+                                break;
+                            case 2:
+                                System.out.println(INPUTNAME);
+                                book.setBookName(checkbookName(sc));
+                                break;
+                        }
+                    }
                     bookList.set(i, book);
                     check = true;
                     break;
                 }
             }
+            LibraryBookCardImpl lbCardImpl = new LibraryBookCardImpl();                        // update lai the muon sach.
+            List<LibraryBookCard> libraryBookCardList = lbCardImpl.readFromFile();
+            for (LibraryBookCard lbCard : libraryBookCardList) {
+                for (int i = 0; i < lbCard.getBookArrayList().size(); i++) {
+                    if (lbCard.getBookArrayList().get(i).getBookId().equals(book.getBookId())) {
+                        lbCard.getBookArrayList().set(i, book);
+                    }
+                }
+            }
+            lbCardImpl.writeToFile(libraryBookCardList);
             boolean result = writeToFile(bookList);
             if (check && result) {
                 return true;
@@ -53,11 +89,14 @@ public class BookImpl implements ILibrary<Book, String> {
     }
 
     @Override
-    public boolean delete(String name) {                                // 3. delete book (update status)
+    public boolean delete(String id) {                                // 3. delete book by id (update status)
         List<Book> bookList = readFromFile();
+        if (bookList == null) {
+            bookList = new ArrayList<>();
+        }
         boolean check = false;
         for (Book book : bookList) {
-            if (book.getBookName().equals(name)) {
+            if (book.getBookId().equals(id)) {
                 book.setBookStatus(STATUS3);
                 check = true;
                 break;
@@ -73,14 +112,14 @@ public class BookImpl implements ILibrary<Book, String> {
 
     @Override
     public boolean writeToFile(List<Book> list) {               // 4. write to file
-        return writeAndReadData.writeToFile(list,URL_BOOK );
+        return writeAndReadData.writeToFile(list, URL_BOOK);
     }
 
     @Override
     public List<Book> readFromFile() {                          // 5. read form file
-        List<Book> bookList=writeAndReadData.readFormFile(URL_BOOK );
-        if (bookList==null){
-            bookList=new ArrayList<>();
+        List<Book> bookList = writeAndReadData.readFormFile(URL_BOOK);
+        if (bookList == null) {
+            bookList = new ArrayList<>();
         }
         return bookList;
     }
@@ -88,13 +127,13 @@ public class BookImpl implements ILibrary<Book, String> {
     @Override
     public List<Book> findbyName(String name) {                     // 6. find book by name
         List<Book> bookList = readFromFile();
-        List<Book> catalogListByName = new ArrayList<>();
+        List<Book> bookListByName = new ArrayList<>();
         for (Book book : bookList) {
             if (book.getBookName().contains(name)) {
-                catalogListByName.add(book);
+                bookListByName.add(book);
             }
         }
-        return catalogListByName;
+        return bookListByName;
     }
 
     @Override
@@ -121,60 +160,37 @@ public class BookImpl implements ILibrary<Book, String> {
             }
         } while (true);
         System.out.println(INPUTNAME);
-        book.setBookName(strValidate(sc,REGEXNAME ));
-        System.out.println("Nhập số lượng sách: ");
-        String number = strValidate(sc,REGEXBOOKQUANTITY );
+        book.setBookName(checkbookName(sc));
+        System.out.println(BOOKQUANTITY);
+        String number = strValidate(sc, REGEXQUANTITY);
         book.setBookquantity(Integer.parseInt(number));
-        do {
-            System.out.println("Nhập vào tên tác giả");
-            String addNameauthor = strValidate(sc,REGEXFULLNAME );
-            boolean check = false;
-            for (String authorName : book.getListAuthor()) {
-                if (authorName.equals(authorName)) {
-                    check = true;
-                    break;
-                }
-            }
-            if (check) {
-                System.out.println(NAMEERROR1);
-            } else {
-                book.getListAuthor().add(addNameauthor);
-            }
-            System.out.println("Bạn có muốn thêm tác giả khác không?\n" +
-                    "1. có    2. không");
-            System.out.println("");
-            int choice = choiceNumber(sc, 1, 2);
-            if (choice != 1) {
-                break;
-            }
-            System.out.println("Tình trạng của sách:\n" +
-                    "1.Mới    2.Bình thường    3.Cũ");
-            int choice1 =choiceNumber(sc, 1, 3);
-            if (choice1 == 1) {
-                book.setBookStates("Mới");
-            } else if (choice1 == 2) {
-                book.setBookStates("Bình thường");
-            } else {
-                book.setBookStates("Cũ");
-            }
-        } while (true);
-        System.out.println(INPUTSTATUS+"\n" +
-                "1.Hoạt động     2.Hết sách     3.Không hoạt động.");
-        int choice2 = choiceNumber(sc, 1, 3);
-        if (choice2 == 1) {
-            book.setBookStates(STATUS1);
-        } else if (choice2 == 2) {
-            book.setBookStates(STATUS2);
-        } else {
-            book.setBookStates(STATUS3);
-        }
+        System.out.println(CATALOGFORBOOK);
+        book.setCatalog(catalogForbook(sc));
+//        if (!book.getCatalog().isCatalogStatus()){
+//            book.setBookStatus(STATUS3);
+//        }
+        book.setListAuthor((ArrayList<String>) addAuthor(sc));
+        book.setBookStates(bookStates(sc));
         return book;
     }
+
     @Override
     public void displayData() {
         List<Book> bookList = readFromFile();
-        for (Book book : bookList) {
-            System.out.printf("%s - %s - %d - %s - %s - %s - %s",book.getBookId(),book.getBookName(),book.getBookquantity(),book.getCatalog().getCatalogName(),book.getBookStates(),book.getBookStatus());
+        if (bookList == null) {
+            System.out.println(ERRORNULL);
+        } else {
+            for (Book book : bookList) {
+                System.out.printf("                      |     1.MÃ SÁCH: %-6S            2.TÊN SÁCH: %-25S         3. DANH MỤC: %-20S                   |\n", book.getBookId(), book.getBookName(), book.getCatalog().getCatalogName());
+                System.out.printf("                      |     4.SỐ LƯỢNG: %-4d             5.TÌNH TRẠNG: %-13s                   6. TRẠNG THÁI: %-16s                     |\n", book.getBookquantity(), book.getBookStates(), book.getBookStatus());
+                for (String str : book.getListAuthor()) {
+                    System.out.printf("                      |     7.TÁC GIẢ: %-100s                |", book.getListAuthor().toString());
+
+                }
+                System.out.println("\n                      +------------------------------------------------------------------------------------------------------------------------------------+");
+            }
+
         }
+
     }
 }
