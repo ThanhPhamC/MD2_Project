@@ -1,7 +1,7 @@
 package myproject.run;
 
 import myproject.bussiness.entity.Book;
-import myproject.bussiness.entity.Catalog;
+
 import myproject.bussiness.entity.LibraryBookCard;
 import myproject.bussiness.impl.LibraryBookCardImpl;
 
@@ -28,7 +28,7 @@ public class LibraryBookCardManagement {
             int choice = choiceNumber(sc, 1, 6);
             switch (choice) {
                 case 1:
-                    showListCard(sc);
+                    showListCard();
                     break;
                 case 2:
                     addNewCard(sc);
@@ -49,7 +49,7 @@ public class LibraryBookCardManagement {
         } while (checkout);
     }
 
-    public static void showListCard(Scanner sc) {                            //1. show list card
+    public static void showListCard() {                            //1. show list card
         System.out.println(SHOWLISTCARD);
         lbCardImpl.displayData();
         System.out.println("\n\n");
@@ -70,7 +70,6 @@ public class LibraryBookCardManagement {
     }
 
     public static void editCard(Scanner sc) {                        //                  3. edit card
-        List<LibraryBookCard> libraryBookCardList = lbCardImpl.readFromFile();
         LibraryBookCard lbCard = new LibraryBookCard();
         System.out.println(EDITCARD);
         System.out.println("Nhập vào mã của mục muốn cập nhập");
@@ -103,17 +102,17 @@ public class LibraryBookCardManagement {
                     "|     *************************************     DANH SÁCH THẺ MƯỢN SÁCH     *****************************************      |\n" +
                     "+--------------------------------------------------------------------------------------------------------------------------+");
             for (LibraryBookCard lbCard : libraryBookCardList) {
-                String actualReturnDate = "Chưa trả.";
+                String actualDay = "Chưa trả.";
                 DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
                 if (lbCard.getActualReturnDate() != null) {
-                    actualReturnDate = df.format(lbCard.getActualReturnDate());
+                    actualDay = df.format(lbCard.getActualReturnDate());
                 }
                 String borrowDay = df.format(lbCard.getBorrowDate());
                 String returnDay = df.format(lbCard.getReturnDate());
                 System.out.printf("|   1.MÃ THẺ: %-5d    2.TÊN THẺ: %-18s      3.NGƯỜI MƯỢN: %-20s      4.TRẠNG THÁI: %-10s |\n" +
                                 "|   5.NGÀY MƯỢN: %-10s                               6.NGÀY TRẢ: %-10s            7.NGÀY TRẢ THỰC TẾ: %-10s |\n"
                         ,
-                        lbCard.getLibraryBookCardId(), lbCard.getLibraryBookCardName(), lbCard.getUser().getUserName(), lbCard.getLibraryBookCardStatus(), borrowDay, returnDay, actualReturnDate);
+                        lbCard.getLibraryBookCardId(), lbCard.getLibraryBookCardName(), lbCard.getUser().getUserName(), lbCard.getLibraryBookCardStatus(), borrowDay, returnDay, actualDay);
                 for (Book book : lbCard.getBookArrayList()) {
                     System.out.printf("|   8.DANH SÁCH SÁCH MƯỢN: %-80s                |\n" +
                             "+--------------------------------------------------------------------------------------------------------------------------+\n", book.getBookName());

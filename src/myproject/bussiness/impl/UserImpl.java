@@ -37,7 +37,10 @@ public class UserImpl implements IUser<User, String> {
             boolean check = false;
             for (int i = 0; i < userList.size(); i++) {
                 if (userList.get(i).getUserId() == user.getUserId()) {
-                    userList.set(i, user);
+                    userList.get(i).setPhonenumber(user.getPhonenumber());
+                    userList.get(i).setUserEmail(user.getUserEmail());
+                    userList.get(i).setUserAdress(user.getUserAdress());
+                    userList.get(i).setUserStatus(user.isUserStatus());
                     check = true;
                     break;
                 }
@@ -52,11 +55,12 @@ public class UserImpl implements IUser<User, String> {
     }
 
     @Override
-    public boolean delete(String name) {                                            // 3. delete(update status)
+    public boolean delete(String id) {                                            // 3. delete(update status)
+        int userId=Integer.parseInt(id);
         List<User> userList = readFromFile();
         boolean check = false;
         for (User user : userList) {
-            if (user.getUserName().equals(name)) {
+            if (user.getUserId()==userId) {
                 user.setUserStatus(!user.isUserStatus());
                 check = true;
                 break;
@@ -131,12 +135,26 @@ public class UserImpl implements IUser<User, String> {
                 System.out.println("Không trùng khớp, nhập lại.");
             }
         } while (true);
-        System.out.print(PHONENUMBER);
-        String phonenumber = strValidate(sc, REGEXPHONE);
-        user.setPhonenumber(Integer.parseInt(phonenumber));
-        System.out.print(EMAIL);
-        user.setUserEmail(strValidate(sc, REGEXEMAIL));
-        ///thieu dia chi nua :(((((
+        do {
+            System.out.print(PHONENUMBER);
+            user.setPhonenumber(Integer.parseInt(strValidate(sc, REGEXPHONE)));
+            boolean check = checkphonenumber(user.getPhonenumber());
+            if (check) {
+                System.out.println(PHONEERR);
+            } else {
+                break;
+            }
+        } while (true);
+        do {
+            System.out.print(EMAIL);
+            user.setUserEmail(strValidate(sc, REGEXEMAIL));
+            boolean check = checkEmail(user.getUserEmail());
+            if (check) {
+                System.out.println(EMAILERR);
+            } else {
+                break;
+            }
+        } while (true);
         System.out.print(ADDRESS);
         user.setUserAdress(sc.nextLine());
         System.out.print(LBCARDSTART);
@@ -146,20 +164,26 @@ public class UserImpl implements IUser<User, String> {
         calendar.setTime(date);
         System.out.print(LBCARDEND);
         int choice1 = choiceNumber(sc, 1, 3);
+        int month = calendar.get(Calendar.MONTH);
         switch (choice1) {
             case 1:
                 calendar.roll(Calendar.MONTH, 3);
-                user.setLibraryCardEndDay(calendar.getTime());
+                if (month >= 10) {
+                    calendar.roll(Calendar.YEAR, 1);
+                }
                 break;
             case 2:
                 calendar.roll(Calendar.MONTH, 6);
-                user.setLibraryCardEndDay(calendar.getTime());
+                if (month >= 7) {
+                    calendar.roll(Calendar.YEAR, 1);
+                }
                 break;
             case 3:
-                calendar.roll(Calendar.MONTH, 12);
-                user.setLibraryCardEndDay(calendar.getTime());
+                calendar.roll(Calendar.YEAR, 1);
                 break;
         }
+        user.setLibraryCardEndDay(calendar.getTime());
+
         if (userList.size() == 0) {
             user.setPermission(true);
         } else {
@@ -181,28 +205,30 @@ public class UserImpl implements IUser<User, String> {
 
     @Override
     public void displayData() {
-        LibraryBookCardImpl lbCardImpl=new LibraryBookCardImpl();
+        LibraryBookCardImpl lbCardImpl = new LibraryBookCardImpl();
         List<User> userList = lbCardImpl.userStatus();
         if (userList == null) {
             System.out.println(ERRORNULL);
         } else {
-            String status = STATUS1;
+            String status ;
             for (User user : userList) {
-                if (!user.isUserStatus()) {
+                if (user.isUserStatus()) {
+                    status = STATUS1;
+                }else {
                     status = STATUS3;
                 }
                 DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
                 String startDay = df.format(user.getLibraryCardStartDay());
                 String endDay = df.format(user.getLibraryCardEndDay());
-
-                System.out.printf("%d - %s - %d - %s - %s - %s - %s - %s", user.getUserId(), user.getUserName(), user.getPhonenumber(), user.getUserEmail(),
-                        user.getUserAdress(), startDay, endDay, status);
+                System.out.printf(
+                        "|     1.MÃ NGƯỜI DÙNG: %-5d      2.TÊN ĐẦY ĐỦ: %-20s        3.SỐ ĐIỆN THOẠI: %-11d                             |\n" +
+                        "|     4.ĐỊA CHỈ NHÀ: %-47s        5.EMAIL: %-23s                         |\n" +
+                        "|     6.NGÀY MUA THẺ: %-10s      7.NGÀY HẾT HẠN THẺ: %-10s        8.TRẠNG THÁI: %-16s                           |\n" +
+                        "+------------------------------------------------------------------------------------------------------------------------------------+\n",
+                        user.getUserId(), user.getUserName(), user.getPhonenumber(),user.getUserAdress(),user.getUserEmail(),startDay, endDay, status);
             }
         }
-
-
     }
-
     @Override
     public User checkLogin(String name, String pass) {
         List<User> listUser = readFromFile();

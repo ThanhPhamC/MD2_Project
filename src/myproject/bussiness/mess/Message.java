@@ -16,6 +16,8 @@ public class Message {
     public static final String STATUS1 = "Hoạt động ";
     public static final String STATUS2 = "Hết sách  ";
     public static final String LBCARDSTATUS1 = "Hiệu lực";
+    public static final String PHONEERR = "Phone đã tồn tại";
+    public static final String EMAILERR = "Email đã tồn tại";
     public static final String LBCARDSTATUS2 = "Vi phạm";
     public static final String LBCARDSTATUS3 = "Hoàn thành";
     public static final String PHONENUMBER = "* Nhập số điện thoại (84-xxxxxxxxx): ";
@@ -23,7 +25,7 @@ public class Message {
     public static final String ADDRESS = "* Nhập địa chỉ(Thành phố- Quận(huyện)- Phường- Số nhà): ";
     public static final String LBCARDSTART = "* Ngày mua thẻ thư viện(dd/mm/yyyy): ";
     public static final String LBCARDEND = "* Chọn thời gian muốn mua :\n"+
-                                             "1. 3tháng       2. 6tháng       3. 1năm.";
+                                             "1. 3 tháng       2. 6 tháng       3. 1 năm.";
     public static final String ADDBOOKTOCARD = "* Thêm sách vào phiếu mượn: ";
     public static final String DAYRETURNBOOK = "* NGÀY TRẢ SÁCH: ";
 

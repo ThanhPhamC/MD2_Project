@@ -174,32 +174,34 @@ public class CheckValidate {
 
         return (ArrayList<Book>) bookListReturn;
     }
-    public static User userForCard(Scanner sc){
-        LibraryBookCardImpl lbCardImpl=new LibraryBookCardImpl();
-        User user =new User();
-        UserImpl userImpl=new UserImpl();
-        List<User> userList=lbCardImpl.userStatus();
+
+    public static User userForCard(Scanner sc) {                                     // choice user for card book
+        LibraryBookCardImpl lbCardImpl = new LibraryBookCardImpl();
+        User user = new User();
+        UserImpl userImpl = new UserImpl();
+        List<User> userList = lbCardImpl.userStatus();
         do {
-            for (User user1:userList) {
-                if (user1.isUserStatus()){
-                    System.out.printf("%d---%5s\n",user1.getUserId(),user1.getUserName());
+            for (User user1 : userList) {
+                if (user1.isUserStatus()) {
+                    System.out.printf("%d---%5s\n", user1.getUserId(), user1.getUserName());
                 }
             }
             System.out.println(YOURCHOICE);
-            int choice=Integer.parseInt(strValidate(sc,REGEXQUANTITY)) ;
-            boolean check= false;
-            for (User use:userList) {
-                if (use.getUserId()==choice){
-                    user=use;
-                    check=true;
+            int choice = Integer.parseInt(strValidate(sc, REGEXQUANTITY));
+            boolean check = false;
+            for (User use : userList) {
+                if (use.getUserId() == choice) {
+                    user = use;
+                    check = true;
                     break;
                 }
-            }if (check){
+            }
+            if (check) {
                 break;
-            }else {
+            } else {
                 System.out.println("Vui lòng chọn theo danh sách hiển thị.");
             }
-        }while (true);
+        } while (true);
         return user;
     }
 
@@ -271,6 +273,32 @@ public class CheckValidate {
         }
         return catalogReturn;
 
+    }
+
+    public static boolean checkphonenumber( int phone) {
+        UserImpl userImpl = new UserImpl();
+        List<User> userList = userImpl.readFromFile();
+        boolean check= false;
+        for (User us : userList) {
+            if (us.getPhonenumber()==phone){
+                check=true;
+                break;
+            }
+        }
+        return check;
+    }
+    public static boolean checkEmail(String email){
+
+        UserImpl userImpl = new UserImpl();
+        List<User> userList = userImpl.readFromFile();
+        boolean check= false;
+        for (User us : userList) {
+            if (us.getUserEmail().equals(email)){
+                check=true;
+                break;
+            }
+        }
+        return check;
     }
 
 

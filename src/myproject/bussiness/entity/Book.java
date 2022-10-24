@@ -64,8 +64,13 @@ public class Book implements Serializable {
 
     public void setCatalog(Catalog catalog) {
         this.catalog = catalog;
-        if (!catalog.isCatalogStatus()){
+        if (catalog.isCatalogStatus()){
+            if (bookquantity>0){
+                this.bookStatus=Message.STATUS1;
+            }
+        }else {
             this.bookStatus=Message.STATUS3;
+
         }
     }
 

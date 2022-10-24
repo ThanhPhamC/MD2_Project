@@ -99,14 +99,24 @@ public class CatalogImpl implements ICatalog<Catalog, String>, Comparator<Catalo
     @Override
     public boolean delete(String name) {                          // 4. delete catalog( update status)
         List<Catalog> catalogList = readFromFile();
+        Catalog catalogReturn =new Catalog();
         boolean check = false;
         for (Catalog catalog : catalogList) {
             if (catalog.getCatalogName().equals(name)) {
                 catalog.setCatalogStatus(!catalog.isCatalogStatus());
+                catalogReturn=catalog;
                 check = true;
                 break;
             }
         }
+        BookImpl bookImpl = new BookImpl();                                         // doan ghi lai book
+        List<Book> bookList = bookImpl.readFromFile();
+        for (Book book : bookList) {
+            if (book.getCatalog().getCatalogId()==catalogReturn.getCatalogId()){
+                book.setCatalog(catalogReturn);
+            }
+        }
+        bookImpl.writeToFile(bookList);
         boolean result = writeToFile(catalogList);
         if (result && check) {
             return true;

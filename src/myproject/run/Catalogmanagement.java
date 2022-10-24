@@ -90,7 +90,7 @@ public class Catalogmanagement {
     public static void updateStatus(Scanner sc) {                               //4. delete catalog(update status)
         System.out.println(DELETECATALOG);
         System.out.println("Nhập vào tên của Catalog muốn cập nhập");
-        String catalogName = strValidate(sc, REGEXNAME);
+        String catalogName = strValidate(sc, REGEXFULLNAME);
         boolean check = catalogImpl.delete(catalogName);
         soutMess(check);
     }

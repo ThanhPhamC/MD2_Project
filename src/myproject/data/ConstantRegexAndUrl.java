@@ -5,7 +5,7 @@ public class ConstantRegexAndUrl {
     public static final String URL_BOOK ="/Users/phamthanh/Desktop/JaVa/MD2_Project/src/myproject/data/Book.txt";
     public static final String URL_LBCARD ="/Users/phamthanh/Desktop/JaVa/MD2_Project/src/myproject/data/LibraryBookCard.txt";
     public static final String URL_USER ="/Users/phamthanh/Desktop/JaVa/MD2_Project/src/myproject/data/User.txt";
-
+public  static final String URL_CheckLogin="/Users/phamthanh/Desktop/JaVa/MD2_Project/src/myproject/data/CheckLogin.txt";
     public static final String REGEXFULLNAME ="^[a-zA-Z]{2,}(?: [a-zA-Z]+){0,4}$";
     public static final String REGEXNAME ="\\w{6,50}$";
     public static final String REGEXQUANTITY ="^[^0]\\d*";

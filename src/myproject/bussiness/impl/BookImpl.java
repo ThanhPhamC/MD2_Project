@@ -166,14 +166,10 @@ public class BookImpl implements ILibrary<Book, String> {
         book.setBookquantity(Integer.parseInt(number));
         System.out.println(CATALOGFORBOOK);
         book.setCatalog(catalogForbook(sc));
-//        if (!book.getCatalog().isCatalogStatus()){
-//            book.setBookStatus(STATUS3);
-//        }
         book.setListAuthor((ArrayList<String>) addAuthor(sc));
         book.setBookStates(bookStates(sc));
         return book;
     }
-
     @Override
     public void displayData() {
         List<Book> bookList = readFromFile();
@@ -181,14 +177,12 @@ public class BookImpl implements ILibrary<Book, String> {
             System.out.println(ERRORNULL);
         } else {
             for (Book book : bookList) {
-                System.out.printf("                      |     1.MÃ SÁCH: %-6S            2.TÊN SÁCH: %-25S         3. DANH MỤC: %-20S                   |\n", book.getBookId(), book.getBookName(), book.getCatalog().getCatalogName());
-                System.out.printf("                      |     4.SỐ LƯỢNG: %-4d             5.TÌNH TRẠNG: %-13s                   6. TRẠNG THÁI: %-16s                     |\n", book.getBookquantity(), book.getBookStates(), book.getBookStatus());
-                for (String str : book.getListAuthor()) {
-                    System.out.printf("                      |     7.TÁC GIẢ: %-100s                |", book.getListAuthor().toString());
-
-                }
+                System.out.printf("                      |     1.MÃ SÁCH: %-6S            2.TÊN SÁCH: %-25S         3. DANH MỤC: %-25S              |\n"+
+                                  "                      |     4.SỐ LƯỢNG: %-4d             5.TÌNH TRẠNG: %-13s                   6. TRẠNG THÁI: %-16s                     |\n"+
+                                  "                      |     7.TÁC GIẢ: %-100s                |", book.getBookId(), book.getBookName(), book.getCatalog().getCatalogName(), book.getBookquantity(), book.getBookStates(), book.getBookStatus(),book.getListAuthor());
                 System.out.println("\n                      +------------------------------------------------------------------------------------------------------------------------------------+");
             }
+
 
         }
 

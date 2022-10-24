@@ -1,15 +1,11 @@
 package myproject.run;
 
-import myproject.bussiness.entity.Book;
 import myproject.bussiness.entity.User;
-import myproject.bussiness.impl.BookImpl;
-import myproject.bussiness.impl.CatalogImpl;
-import myproject.bussiness.impl.LibraryBookCardImpl;
 import myproject.bussiness.impl.UserImpl;
+import myproject.data.ConstantRegexAndUrl;
+import myproject.data.WriteAndReadData;
 
-
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
 import java.util.Scanner;
 
 import static myproject.bussiness.mess.CheckValidate.*;
@@ -17,20 +13,10 @@ import static myproject.bussiness.mess.Message.*;
 import static myproject.data.ConstandDesign.*;
 
 public class LibraryManagement {
-
     public static UserImpl userImpl = new UserImpl();
-    public static BookImpl bookUmpl = new BookImpl();
-    public static CatalogImpl catalogOmpl =new CatalogImpl();
-    public static LibraryBookCardImpl lbCardImpl= new LibraryBookCardImpl();
 
     public static void main(String[] args) {
-        List<Book> bookList= bookUmpl.readFromFile();
-
-
-
-
         Scanner sc = new Scanner(System.in);
-
         do {
             System.out.println(SHOWHEARD);
             int choice = choiceNumber(sc, 1, 3);
@@ -56,8 +42,12 @@ public class LibraryManagement {
             String passWord = sc.nextLine();
             User user = userImpl.checkLogin(userName, passWord);
             if (user != null) {
+                writeToFileLogin(user);
                 if (user.isPermission()) {
                     displayAdminMenu(sc);
+                } else {
+                    UserManagement.displayMenuUser(sc);
+                    break;
                 }
                 break;
             } else {
@@ -74,8 +64,7 @@ public class LibraryManagement {
 
     public static void register(Scanner sc) {
         System.out.println(SHOWHREGISTER);
-        User user = new User();
-        user = userImpl.inputData(sc);
+        User user = userImpl.inputData(sc);
         boolean result = userImpl.create(user);
         soutMess(result);
     }
@@ -93,7 +82,7 @@ public class LibraryManagement {
                     BookManagement.displayBookMenu(sc);
                     break;
                 case 3:
-                    UserManagement.displayUser(sc);
+                    AdminManagement.displayUser(sc);
                     break;
                 case 4:
                     LibraryBookCardManagement.displayLBCard(sc);
@@ -105,4 +94,56 @@ public class LibraryManagement {
         } while (checkout);
     }
 
+    public static void writeToFileLogin(User user) {
+        File file = null;
+        FileOutputStream fos = null;
+        ObjectOutputStream oos = null;
+        try {
+            file = new File(ConstantRegexAndUrl.URL_CheckLogin);
+            fos = new FileOutputStream(file);
+            oos = new ObjectOutputStream(fos);
+            oos.writeObject(user);
+        } catch (Exception ex1) {
+            ex1.printStackTrace();
+        } finally {
+            try {
+                if (fos != null) {
+                    fos.close();
+                }
+                if (oos != null) {
+                    oos.close();
+                }
+            } catch (Exception ex2) {
+                ex2.printStackTrace();
+            }
+        }
+    }
+
+    public User readFormFile() {
+        User user = new User();
+        File file = null;
+        FileInputStream fis = null;
+        ObjectInputStream ois = null;
+        try {
+            file=new File(ConstantRegexAndUrl.URL_CheckLogin);
+            if (file.exists()){
+                fis=new FileInputStream(file);
+                ois=new ObjectInputStream(fis);
+                user= (User) ois.readObject();
+            }
+        }catch (Exception ex1){
+            ex1.printStackTrace();
+        }finally {
+            try {
+               if (fis!=null){
+                   fis.close();
+               }if (ois!=null){
+                   ois.close();
+                }
+            }catch (Exception ex2){
+               ex2.printStackTrace();
+            }
+        }
+return user;
+    }
 }

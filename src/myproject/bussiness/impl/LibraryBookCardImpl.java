@@ -155,13 +155,15 @@ public class LibraryBookCardImpl implements ILibraryBookCard<LibraryBookCard, St
             String borrowDay = df.format(lbCard.getBorrowDate());
             String returnDay = df.format(lbCard.getReturnDate());
             System.out.printf("|   1.MÃ THẺ: %-5d    2.TÊN THẺ: %-18s      3.NGƯỜI MƯỢN: %-20s      4.TRẠNG THÁI: %-10s |\n" +
-                            "|   5.NGÀY MƯỢN: %-10s                               6.NGÀY TRẢ: %-10s            7.NGÀY TRẢ THỰC TẾ: %-10s |\n"
-                    ,
+                              "|   5.NGÀY MƯỢN: %-10s                               6.NGÀY TRẢ: %-10s            7.NGÀY TRẢ THỰC TẾ: %-10s |\n",
                     lbCard.getLibraryBookCardId(), lbCard.getLibraryBookCardName(), lbCard.getUser().getUserName(), lbCard.getLibraryBookCardStatus(), borrowDay, returnDay, actualReturnDate);
+            String strListBook = "|   8.DANH SÁCH SÁCH MƯỢN: ";
             for (Book book : lbCard.getBookArrayList()) {
-                System.out.printf("|   8.DANH SÁCH SÁCH MƯỢN: %-80s                |\n" +
-                        "+--------------------------------------------------------------------------------------------------------------------------+\n", book.getBookName());
+                strListBook+=book.getBookName()+". ";
             }
+            System.out.printf("%-103s                    |",strListBook);
+            System.out.println("\n+--------------------------------------------------------------------------------------------------------------------------+");
+
         }
     }
 
@@ -186,7 +188,7 @@ public class LibraryBookCardImpl implements ILibraryBookCard<LibraryBookCard, St
 
     @Override
     public List<LibraryBookCard> searchByUserId(int id) {                          //9. search by user id
-        List<LibraryBookCard> libraryBookCardList = readFromFile();
+        List<LibraryBookCard> libraryBookCardList = updateStatus();
         if (libraryBookCardList == null) {
             libraryBookCardList = new ArrayList<>();
         }
@@ -206,7 +208,7 @@ public class LibraryBookCardImpl implements ILibraryBookCard<LibraryBookCard, St
         for (User user : userList) {
             int count = 0;
             for (LibraryBookCard lbCard : libraryBookCardList) {
-                if (user.getUserName().equals(lbCard.getUser().getUserName()) && lbCard.getLibraryBookCardStatus().equals(LBCARDSTATUS3)) {
+                if (user.getUserName().equals(lbCard.getUser().getUserName()) && lbCard.getLibraryBookCardStatus().equals(LBCARDSTATUS2)) {
                     count++;
                 }
             }

@@ -94,6 +94,7 @@ public class BookManagement {
     }
 
     public static void searchBook(Scanner sc) {                           // 5. search by name
+        System.out.println(SEARCHBYNAMEBOOK);
         System.out.print("Nhập tên sách muốn tìm: ");
         String bookName = sc.nextLine();
         System.out.println(SEARCHBYNAMEBOOK);
@@ -106,10 +107,12 @@ public class BookManagement {
                     "                            |------------------------------------------------------------------------------------------------------------------------------|"
             );
             for (Book book : bookList) {
-                System.out.printf("                            |     1.MÃ SÁCH: %-6S           2.TÊN SÁCH: %-25S        3. DANH MỤC: %-20S               |\n", book.getBookId(), book.getBookName(), book.getCatalog().getCatalogName());
-                System.out.printf("                            |     4.SỐ LƯỢNG: %-4d             5.TÌNH TRẠNG: %-13s                   6. TRẠNG THÁI: %-16s               |\n", book.getBookquantity(), book.getBookStates(), book.getBookStatus());
-                System.out.printf("                            |     7.TÁC GIẢ: %-100s          |",book.getListAuthor().toString());
-                System.out.println("\n                            +------------------------------------------------------------------------------------------------------------------------------+");
+                System.out.printf("                            |     1.MÃ SÁCH: %-6S           2.TÊN SÁCH: %-25S        3. DANH MỤC: %-20S               |\n"+
+                                  "                            |     4.SỐ LƯỢNG: %-4d             5.TÌNH TRẠNG: %-13s                   6. TRẠNG THÁI: %-16s               |\n"+
+                                  "                            |     7.TÁC GIẢ: %-100s          |\n"+
+                                  "                            +------------------------------------------------------------------------------------------------------------------------------+", book.getBookId(), book.getBookName(), book.getCatalog().getCatalogName(), book.getBookquantity(), book.getBookStates(), book.getBookStatus(),book.getListAuthor().toString());
+
+
             }
         }
 
