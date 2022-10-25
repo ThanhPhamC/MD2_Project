@@ -131,9 +131,14 @@ public class UserManagement {
                             }
                         }while (true);
                     }
-                    System.out.println(Message.ADDRESS);
-                    user.setUserAdress(sc.nextLine());
 
+                    System.out.println("Bạn có muốn thay mới địa chỉ không?\n" +
+                            "1. Có      2. Không ");
+                    int choice2 = choiceNumber(sc, 1, 2);
+                    if (choice2 == 1) {
+                        System.out.println(Message.ADDRESS);
+                        user.setUserAdress(sc.nextLine());
+                    }
                     System.out.println("Bạn có muốn thay mới email không?\n" +
                             "1. Có      2. Không ");
                     int choi = choiceNumber(sc, 1, 2);
@@ -158,6 +163,7 @@ public class UserManagement {
                 }
                 boolean check= userImpl.writeToFile(userList);
                 soutMess(check);
+                break;
                 case 5:
                     System.out.printf("\n+----------------------------------------------------------------------------------------------------------------------------------------------------------+\n" +
                             "|                                                                                                                                                          |\n" +

@@ -127,8 +127,15 @@ public class LibraryBookCardImpl implements ILibraryBookCard<LibraryBookCard, St
         String strName = df.format(date) + "-" + (int) ((Math.random()) * 1000);
         lbCard.setLibraryBookCardName(strName);
         lbCard.setBorrowDate(date);
-        System.out.println(DAYRETURNBOOK);
-        lbCard.setReturnDate(dateValidate(sc));
+        do {
+            System.out.println(DAYRETURNBOOK);
+            lbCard.setReturnDate(dateValidate(sc));
+            if (lbCard.getReturnDate().compareTo(lbCard.getBorrowDate())<0){
+                System.out.println("ngày trả phải lớn hơn ngày mượn!");
+            }else{
+                break;
+            }
+        }while (true);
         System.out.println(ADDBOOKTOCARD);
         lbCard.setBookArrayList(bookListCard(sc));
         System.out.println("Chọn người đọc muốn tạo phiếu.");

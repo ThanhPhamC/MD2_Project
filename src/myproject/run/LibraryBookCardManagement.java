@@ -24,7 +24,6 @@ public class LibraryBookCardManagement {
         boolean checkout = true;
         do {
             System.out.println(SHOWHEARDCARD);
-
             int choice = choiceNumber(sc, 1, 6);
             switch (choice) {
                 case 1:
@@ -70,15 +69,37 @@ public class LibraryBookCardManagement {
     }
 
     public static void editCard(Scanner sc) {                        //                  3. edit card
-        LibraryBookCard lbCard = new LibraryBookCard();
+        List<LibraryBookCard> libraryBookCardList = lbCardImpl.readFromFile();
         System.out.println(EDITCARD);
         System.out.println("Nhập vào mã của mục muốn cập nhập");
-        lbCard.setLibraryBookCardId(Integer.parseInt(strValidate(sc, REGEXQUANTITY)));
-        System.out.println(ADDBOOKTOCARD);
-        lbCard.setBookArrayList(bookListCard(sc));
-        System.out.println(DAYRETURNBOOK);
-        lbCard.setReturnDate(dateValidate(sc));
-        boolean result = lbCardImpl.update(lbCard);
+        int lbCardId = Integer.parseInt(strValidate(sc, REGEXQUANTITY));
+        boolean result = false;
+        for (LibraryBookCard lbc : libraryBookCardList) {
+            if (lbc.getLibraryBookCardId() == lbCardId) {
+                do {
+                    System.out.println("Xác nhận cập nhập sách cho thẻ.\n" + "1. Có      2. Không.");
+                    int choice = choiceNumber(sc, 1, 2);
+                    if (choice == 1) {
+                        System.out.println(ADDBOOKTOCARD);
+                        lbc.setBookArrayList(bookListCard(sc));
+                    } else break;
+                } while (true);
+                System.out.println("Xác nhận cập nhập ngày trả sách cho thẻ.\n" + "1. Có      2. Không.");
+                int choice = choiceNumber(sc, 1, 2);
+                if (choice == 1) {
+                    do {
+                        System.out.println(DAYRETURNBOOK);
+                        lbc.setReturnDate(dateValidate(sc));
+                        if (lbc.getReturnDate().compareTo(lbc.getBorrowDate()) < 0) {
+                            System.out.println("Ngày trả phải lớn hơn ngày mượn");
+                        } else {
+                            break;
+                        }
+                    } while (true);
+                } else break;
+                result = lbCardImpl.update(lbc);
+            }
+        }
         soutMess(result);
     }
 

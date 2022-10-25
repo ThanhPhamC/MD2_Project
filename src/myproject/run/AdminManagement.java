@@ -2,6 +2,7 @@ package myproject.run;
 
 import myproject.bussiness.entity.User;
 import myproject.bussiness.impl.UserImpl;
+import myproject.bussiness.mess.Message;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -70,38 +71,68 @@ public class AdminManagement {
     public static void editUser(Scanner sc) {                        // 3. edit user
         System.out.println(EDITUSER);
         List<User> userList = userImpl.readFromFile();
-        User user = new User();
         System.out.println("* Nhập mã của người đọc muốn cập nhập.");
-        user.setUserId(Integer.parseInt(strValidate(sc, REGEXQUANTITY)));
-        do {
-            System.out.print(PHONENUMBER);
-            user.setPhonenumber(Integer.parseInt(strValidate(sc, REGEXPHONE)));
-            boolean check = checkphonenumber(user.getPhonenumber());
-            if (check) {
-                System.out.println(PHONEERR);
-            } else {
-                break;
+        int userId=Integer.parseInt(strValidate(sc, REGEXQUANTITY));
+        boolean checkEdit=false;
+        for (User us : userList) {
+            if (us.getUserId() ==userId) {
+                System.out.println("Xác nhận đổi tên.\n" + "1. Có        2. Không.");
+                int choicename = choiceNumber(sc, 1, 2);
+                if (choicename == 1) {
+                    System.out.print(INPUTNAME);
+                    us.setUserName(strValidate(sc, REGEXFULLNAME));
+                }
+                do {
+                    System.out.println("Xác nhận đổi số điện thoại.\n" + "1. Có      2. Không.");
+                    int choice = choiceNumber(sc, 1, 2);
+                    if (choice == 1) {
+                        System.out.print(PHONENUMBER);
+                        us.setPhonenumber(Integer.parseInt(strValidate(sc, REGEXPHONE)));
+                        boolean check = checkphonenumber(us.getPhonenumber());
+                        if (check) {
+                            System.out.println(PHONEERR);
+                        } else {
+                            break;
+                        }
+                    }else{
+                        break;
+                    }
+                } while (true);
+                System.out.println("Bạn có muốn thay mới địa chỉ không?\n" +
+                        "1. Có      2. Không ");
+                int choice2 = choiceNumber(sc, 1, 2);
+                if (choice2 == 1) {
+                    System.out.println(Message.ADDRESS);
+                    us.setUserAdress(sc.nextLine());
+                }
+                do {
+                    System.out.println("Bạn có muốn thay mới email không?\n" +
+                            "1. Có      2. Không ");
+                    int choiceEmail = choiceNumber(sc, 1, 2);
+                    if (choiceEmail == 1) {
+                        System.out.println(Message.EMAIL);
+                        us.setUserEmail(strValidate(sc, REGEXEMAIL));
+                        boolean check2 = checkEmail(us.getUserEmail());
+                        if (check2) {
+                            System.out.println(EMAILERR);
+                        } else {
+                            break;
+                        }
+                    }else{
+                        break;
+                    }
+                } while (true);
+                System.out.println("Xác nhận trạng thái.\n"+"1. Hoạt động     2. Không hoạt động.");
+                int choiceStatus=choiceNumber(sc,1,2);
+                if (choiceStatus==1){
+                    us.setUserStatus(true);
+                }else {
+                    us.setUserStatus(false);
+                }
+               checkEdit = userImpl.update(us);
             }
-        } while (true);
-
-            System.out.print(EMAIL);
-            user.setUserEmail(strValidate(sc, REGEXEMAIL));
-
-        System.out.print(ADDRESS);
-        user.setUserAdress(sc.nextLine());
-        System.out.println(INPUTSTATUS);
-        System.out.println("1." + STATUS1 + "       2." + STATUS3);
-        int choice = choiceNumber(sc, 1, 2);
-        switch (choice) {
-            case 1:
-                user.setUserStatus(true);
-                break;
-            case 2:
-                user.setUserStatus(false);
-                break;
         }
-        boolean check = userImpl.update(user);
-        soutMess(check);
+        soutMess(checkEdit);
     }
 
     public static void deleteUser(Scanner sc) {                                 // 4.delete(update status)

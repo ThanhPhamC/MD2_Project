@@ -5,8 +5,6 @@ import myproject.bussiness.entity.Catalog;
 import myproject.bussiness.impl.CatalogImpl;
 
 
-
-
 import java.util.List;
 import java.util.Scanner;
 
@@ -73,25 +71,50 @@ public class Catalogmanagement {
         }
     }
 
-    public static void updateCatalog(Scanner sc) {                      //3  update catalog
-        List<Catalog>catalogList=catalogImpl.readFromFile();
-        Catalog catalog = new Catalog();
+    public static void updateCatalog(Scanner sc) {                  //3  update catalog
         System.out.println(EDITCATALOG);
-        System.out.println("Nhập vào mã của danh mục muốn cập nhập");
-        catalog.setCatalogId(Integer.parseInt(strValidate(sc, REGEXQUANTITY)));
-        System.out.println(INPUTNAME);
-        catalog.setCatalogName(strValidate(sc,REGEXFULLNAME ));
-        System.out.println(INPUTSTATUS);
-        catalog.setCatalogStatus(choiceBooleanStatus(sc));
-        boolean check = catalogImpl.update(catalog);
+        List<Catalog> catalogList = catalogImpl.readFromFile();
+        System.out.println("Nhập Id muốn cập nhập:");
+        int idInput = Integer.parseInt(strValidate(sc, REGEXQUANTITY));
+        boolean check = false;
+        for (Catalog catalog : catalogList) {
+            if (catalog.getCatalogId() == idInput) {
+                do {
+                System.out.println("Bạn có muốn cập nhập tên không?\n" +
+                        "1.Có      2. Không.");
+                int choices = choiceNumber(sc, 1, 2);
+                if (choices == 1) {
+                        System.out.println(INPUTNAME);
+                        catalog.setCatalogName(strValidate(sc, REGEXFULLNAME));
+                        boolean checkname = false;
+                        for (Catalog cat : catalogList) {
+                            if (cat.getCatalogName().equals(catalog.getCatalogName())) {
+                                checkname = true;
+                                break;
+                            }
+                        }
+                        if (checkname) {
+                            System.out.println(NAMEERROR1);
+                        } else {
+                            break;
+                        }
+                    }else break;
+                }while (true);
+                System.out.println(INPUTSTATUS);
+                boolean catalogStatus=choiceBooleanStatus(sc);
+                catalog.setCatalogStatus(catalogStatus);
+                check = catalogImpl.update(catalog);
+                break;
+            }
+        }
         soutMess(check);
     }
 
     public static void updateStatus(Scanner sc) {                               //4. delete catalog(update status)
         System.out.println(DELETECATALOG);
-        System.out.println("Nhập vào tên của Catalog muốn cập nhập");
-        String catalogName = strValidate(sc, REGEXFULLNAME);
-        boolean check = catalogImpl.delete(catalogName);
+        System.out.println("Nhập vào mã của Catalog muốn cập nhập");
+        String idCatalog = strValidate(sc, REGEXQUANTITY);
+        boolean check = catalogImpl.delete(idCatalog);
         soutMess(check);
     }
 

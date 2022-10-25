@@ -43,68 +43,44 @@ public class CatalogImpl implements ICatalog<Catalog, String>, Comparator<Catalo
         return result;
     }
 
+
     @Override
-    public boolean update(Catalog catalog) {// 3. update catalog
-        Scanner sc = new Scanner(System.in);
+    public boolean update(Catalog catalog) {                            // 3. update catalog
         List<Catalog> catalogList = readFromFile();
-        if (catalogList == null) {
-            return false;
-        } else {
-            boolean check = false;
-            for (int i = 0; i < catalogList.size(); i++) {
-                if (catalogList.get(i).getCatalogId() == catalog.getCatalogId()) {
-                    boolean checkname = false;
-                    for (Catalog cat : catalogList) {
-                        if (cat.getCatalogName().equals(catalog.getCatalogName()) && cat.getCatalogId() != catalog.getCatalogId()) {
-                            checkname = true;
-                            break;
-                        }
-                    }
-                    if (checkname) {
-                        System.out.println("Tên đã tồn tại với 1 Id khác.\n" +
-                                "1. Sử dụng tên ban đầu của catalog.     2.Nhập 1 tên khác.");
-                        int choice = choiceNumber(sc, 1, 2);
-                        switch (choice) {
-                            case 1:
-                                catalog.setCatalogName(catalogList.get(i).getCatalogName());
-                                break;
-                            case 2:
-                                System.out.println(INPUTNAME);
-                                catalog.setCatalogName(checkCatalogName(sc));
-                                break;
-                        }
-                    }
-                    catalogList.set(i, catalog);
-                    check = true;
-                    break;
-                }
-            }
-            BookImpl bookImpl = new BookImpl();                                         // doan ghi lai book
-            List<Book> bookList = bookImpl.readFromFile();
-            for (Book book : bookList) {
-                if (book.getCatalog().getCatalogId()==catalog.getCatalogId()){
-                    book.setCatalog(catalog);
-                }
-            }
-            bookImpl.writeToFile(bookList);
-            boolean result = writeToFile(catalogList);                                // xong book
-            if (check && result) {
-                return true;
-            } else {
-                return false;
+
+        for (int i = 0; i < catalogList.size(); i++) {
+            if (catalogList.get(i).getCatalogId() == catalog.getCatalogId()) {
+                catalogList.set(i,catalog);
+                break;
             }
         }
+        BookImpl bookImpl = new BookImpl();                                         // doan ghi lai book
+        List<Book> bookList = bookImpl.readFromFile();
+        for (Book book : bookList) {
+            if (book.getCatalog().getCatalogId() == catalog.getCatalogId()) {
+                book.setCatalog(catalog);
+            }
+        }
+        bookImpl.writeToFile(bookList);
+        boolean result = writeToFile(catalogList);                                // xong book
+      if (result){
+          return true;
+      }else {
+          return false;
+      }
+
     }
 
     @Override
-    public boolean delete(String name) {                          // 4. delete catalog( update status)
+    public boolean delete(String id) {                          // 4. delete catalog( update status)
+        int idCatalog= Integer.parseInt(id);
         List<Catalog> catalogList = readFromFile();
-        Catalog catalogReturn =new Catalog();
+        Catalog catalogReturn = new Catalog();
         boolean check = false;
         for (Catalog catalog : catalogList) {
-            if (catalog.getCatalogName().equals(name)) {
-                catalog.setCatalogStatus(!catalog.isCatalogStatus());
-                catalogReturn=catalog;
+            if (catalog.getCatalogId()==idCatalog) {
+                catalog.setCatalogStatus(false);
+                catalogReturn = catalog;
                 check = true;
                 break;
             }
@@ -112,7 +88,7 @@ public class CatalogImpl implements ICatalog<Catalog, String>, Comparator<Catalo
         BookImpl bookImpl = new BookImpl();                                         // doan ghi lai book
         List<Book> bookList = bookImpl.readFromFile();
         for (Book book : bookList) {
-            if (book.getCatalog().getCatalogId()==catalogReturn.getCatalogId()){
+            if (book.getCatalog().getCatalogId() == catalogReturn.getCatalogId()) {
                 book.setCatalog(catalogReturn);
             }
         }
@@ -165,8 +141,8 @@ public class CatalogImpl implements ICatalog<Catalog, String>, Comparator<Catalo
         System.out.println(INPUTNAME);
         catalog.setCatalogName(checkCatalogName(sc));
         System.out.println(INPUTSTATUS);
-        boolean status = choiceBooleanStatus(sc);
-        catalog.setCatalogStatus(status);
+        boolean catalogStatus=choiceBooleanStatus(sc);
+        catalog.setCatalogStatus(catalogStatus);
         return catalog;
     }
 

@@ -37,10 +37,7 @@ public class UserImpl implements IUser<User, String> {
             boolean check = false;
             for (int i = 0; i < userList.size(); i++) {
                 if (userList.get(i).getUserId() == user.getUserId()) {
-                    userList.get(i).setPhonenumber(user.getPhonenumber());
-                    userList.get(i).setUserEmail(user.getUserEmail());
-                    userList.get(i).setUserAdress(user.getUserAdress());
-                    userList.get(i).setUserStatus(user.isUserStatus());
+                    userList.set(i,user);
                     check = true;
                     break;
                 }
@@ -61,7 +58,7 @@ public class UserImpl implements IUser<User, String> {
         boolean check = false;
         for (User user : userList) {
             if (user.getUserId()==userId) {
-                user.setUserStatus(!user.isUserStatus());
+                user.setUserStatus(false);
                 check = true;
                 break;
             }
@@ -184,25 +181,14 @@ public class UserImpl implements IUser<User, String> {
         }
         user.setLibraryCardEndDay(calendar.getTime());
 
-        if (userList.size() == 0) {
+        if (userList.size() == 0) {                                 // set quyen add min
             user.setPermission(true);
         } else {
             user.setPermission(false);
         }
-        System.out.println(INPUTSTATUS);
-        System.out.println("1." + STATUS1 + "       2." + STATUS3);
-        int choice = choiceNumber(sc, 1, 2);
-        switch (choice) {
-            case 1:
-                user.setUserStatus(true);
-                break;
-            case 2:
-                user.setUserStatus(false);
-                break;
-        }
+        user.setUserStatus(true);
         return user;
     }
-
     @Override
     public void displayData() {
         LibraryBookCardImpl lbCardImpl = new LibraryBookCardImpl();
@@ -221,7 +207,7 @@ public class UserImpl implements IUser<User, String> {
                 String startDay = df.format(user.getLibraryCardStartDay());
                 String endDay = df.format(user.getLibraryCardEndDay());
                 System.out.printf(
-                        "|     1.MÃ NGƯỜI DÙNG: %-5d      2.TÊN ĐẦY ĐỦ: %-20s        3.SỐ ĐIỆN THOẠI: %-11d                             |\n" +
+                        "|     1.MÃ NGƯỜI DÙNG: %-5d          2.TÊN ĐẦY ĐỦ: %-20s    3.SỐ ĐIỆN THOẠI: %-11d                             |\n" +
                         "|     4.ĐỊA CHỈ NHÀ: %-47s        5.EMAIL: %-23s                         |\n" +
                         "|     6.NGÀY MUA THẺ: %-10s      7.NGÀY HẾT HẠN THẺ: %-10s        8.TRẠNG THÁI: %-16s                           |\n" +
                         "+------------------------------------------------------------------------------------------------------------------------------------+\n",

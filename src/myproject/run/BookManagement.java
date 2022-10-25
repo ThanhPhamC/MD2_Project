@@ -68,20 +68,61 @@ public class BookManagement {
 
     public static void updateBook(Scanner sc) {              //3. update book
         List<Book> bookList = bookImpl.readFromFile();
-        Book book = new Book();
         System.out.println(EDITTBOOK);
         System.out.println("Nhập vào Id của sách muốn cập nhập");
-        book.setBookId(strValidate(sc, REGEXBOOKID));
-        System.out.println(INPUTNAME);
-        book.setBookName(strValidate(sc,REGEXFULLNAME));
-        System.out.println(BOOKQUANTITY);
-        String number = strValidate(sc, REGEXQUANTITY);
-        book.setBookquantity(Integer.parseInt(number));
-        System.out.println(CATALOGFORBOOK);
-        book.setCatalog(catalogForbook(sc));
-        book.setListAuthor((ArrayList<String>) addAuthor(sc));
-        book.setBookStates(bookStates(sc));
-        boolean check = bookImpl.update(book);
+        String bookId = strValidate(sc, REGEXBOOKID);
+        boolean check=false;
+        for (Book book : bookList) {
+                if (book.getBookId().equals(bookId)){
+                    do { System.out.println("Bạn có muốn cập nhập tên không?\n" +
+                            "1.Có      2. Không.");
+                        int choices = choiceNumber(sc, 1, 2);
+                        if (choices == 1) {
+                            System.out.println(INPUTNAME);
+                            book.setBookName(strValidate(sc, REGEXFULLNAME));
+                            boolean checkname = false;
+                            for (Book bookedit : bookList) {
+                                if (bookedit.getBookName().equals(book.getBookName())) {
+                                    checkname = true;
+                                    break;
+                                }
+                            }
+                            if (checkname) {
+                                System.out.println(NAMEERROR1);
+                            } else {
+                                break;
+                            }
+                        }else{
+                            break;
+                        }
+                    } while (true);
+                    System.out.println(BOOKQUANTITY);
+                    book.setBookquantity(Integer.parseInt(strValidate(sc, REGEXQUANTITY)));
+                    System.out.println("Bạn có muốn cập nhập Catalog không?\n" +
+                            "1.Có      2. Không.");
+                    int choiceCatalog = choiceNumber(sc, 1, 2);
+                    if (choiceCatalog == 1) {
+                        System.out.println(CATALOGFORBOOK);
+                        book.setCatalog(catalogForbook(sc));
+                    }
+                    System.out.println("Bạn có muốn cập nhập tác giả không?\n" +
+                            "1.Có      2. Không.");
+                    int choiceAuthor = choiceNumber(sc, 1, 2);
+                    if (choiceAuthor == 1) {
+                        book.setListAuthor((ArrayList<String>) addAuthor(sc));
+                    }
+                    book.setBookStates(bookStates(sc));
+                    System.out.println("Cập nhập trạng thái cho sách: \n"+"1. Hoạt động     2. Không hoạt động");
+                    int choiceStt=choiceNumber(sc,1,2);
+                    if (choiceStt==1){
+                        book.setBookStatus(STATUS1);
+                    }else {
+                        book.setBookStatus(STATUS3);
+                    }
+                   check= bookImpl.update(book);
+                    break;
+                }
+        }
         soutMess(check);
     }
 
@@ -107,10 +148,10 @@ public class BookManagement {
                     "                            |------------------------------------------------------------------------------------------------------------------------------|"
             );
             for (Book book : bookList) {
-                System.out.printf("                            |     1.MÃ SÁCH: %-6S           2.TÊN SÁCH: %-25S        3. DANH MỤC: %-20S               |\n"+
-                                  "                            |     4.SỐ LƯỢNG: %-4d             5.TÌNH TRẠNG: %-13s                   6. TRẠNG THÁI: %-16s               |\n"+
-                                  "                            |     7.TÁC GIẢ: %-100s          |\n"+
-                                  "                            +------------------------------------------------------------------------------------------------------------------------------+", book.getBookId(), book.getBookName(), book.getCatalog().getCatalogName(), book.getBookquantity(), book.getBookStates(), book.getBookStatus(),book.getListAuthor().toString());
+                System.out.printf("                            |     1.MÃ SÁCH: %-6S           2.TÊN SÁCH: %-25S        3. DANH MỤC: %-20S               |\n" +
+                        "                            |     4.SỐ LƯỢNG: %-4d             5.TÌNH TRẠNG: %-13s                   6. TRẠNG THÁI: %-16s               |\n" +
+                        "                            |     7.TÁC GIẢ: %-100s          |\n" +
+                        "                            +------------------------------------------------------------------------------------------------------------------------------+", book.getBookId(), book.getBookName(), book.getCatalog().getCatalogName(), book.getBookquantity(), book.getBookStates(), book.getBookStatus(), book.getListAuthor().toString());
 
 
             }
