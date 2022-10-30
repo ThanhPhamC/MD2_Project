@@ -48,10 +48,10 @@ public class CheckValidate {
                 if (number >= a && number <= b) {
                     break;
                 } else {
-                    System.out.println(ERRCHOICENUMBER + a + "-" + b + " :");
+                    System.out.print(ERRCHOICENUMBER + a + "-" + b + " :");
                 }
             } catch (Exception e) {
-                System.out.println(FORMATERROR);
+                System.out.print(FORMATERROR);
             }
         } while (true);
         return number;
@@ -130,21 +130,18 @@ public class CheckValidate {
         List<Book> bookListReturn = new ArrayList<>();
         do {
             List<Book> bookList = bookImpl.readFromFile();
+            System.out.println("+----------------------------------------------+\n" +
+                    "|    Mã sách.        Tên sách.                 |");
             for (Book book : bookList) {
                 if (book.getBookStatus().equals(STATUS1)) {
-                    System.out.printf("%s---%s\n", book.getBookId(), book.getBookName());
+                    System.out.printf("|  %-10s    %-30s|\n", book.getBookId(), book.getBookName());
                 }
             }
+            System.out.println("+----------------------------------------------+");
             System.out.print("Nhập Id sách muốn thêm: ");
             String choiceId = strValidate(sc, REGEXBOOKID);
             for (Book book : bookList) {
                 if (book.getBookId().equals(choiceId)) {
-                    if (bookListReturn.size() == 0) {
-                        bookListReturn.add(book);
-                        book.setBookquantity(book.getBookquantity() - 1);
-                        bookImpl.writeToFile(bookList);
-                        break;
-                    } else {
                         boolean check = false;
                         for (Book book1 : bookListReturn) {
                             if (book1.getBookId().equals(choiceId)) {
@@ -161,7 +158,7 @@ public class CheckValidate {
                             bookImpl.writeToFile(bookList);
                             break;
                         }
-                    }
+
                 }
             }
             System.out.println("bạn có muốn thêm sách khác không?");
@@ -181,11 +178,14 @@ public class CheckValidate {
         UserImpl userImpl = new UserImpl();
         List<User> userList = lbCardImpl.userStatus();
         do {
+            System.out.println("+----------------------------------------------+\n"+
+                               "|   Mã người đọc      Tên người đọc            |");
             for (User user1 : userList) {
                 if (user1.isUserStatus()) {
-                    System.out.printf("%d---%5s\n", user1.getUserId(), user1.getUserName());
+                    System.out.printf("|    %-5d          %-25s  |\n", user1.getUserId(), user1.getUserName());
                 }
             }
+            System.out.println("+----------------------------------------------+");
             System.out.println(YOURCHOICE);
             int choice = Integer.parseInt(strValidate(sc, REGEXQUANTITY));
             boolean check = false;
@@ -261,9 +261,17 @@ public class CheckValidate {
         Catalog catalogReturn = new Catalog();
         List<Catalog> catalogList = catalogImpl.readFromFile();
         boolean check = false;
+        String strCatalog= "";
+        String str1= "";
         for (Catalog catalog : catalogList) {
-            System.out.printf("%d.%s\n", catalog.getCatalogId(), catalog.getCatalogName());
+            strCatalog+="|  "+ catalog.getCatalogId()+ ". "+catalog.getCatalogName()+"  ";
         }
+        for (int i=0; i<strCatalog.length()+5;i++){
+            str1+="-";
+        }
+        System.out.println("+"+str1+"+");
+        System.out.println(strCatalog+"      |");
+        System.out.println("+"+str1+"+");
         int choice = choiceNumber(sc, 1, catalogList.size());
         for (Catalog catalog : catalogList) {
             if (catalog.getCatalogId() == choice) {

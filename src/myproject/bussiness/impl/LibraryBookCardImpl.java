@@ -6,6 +6,7 @@ import myproject.bussiness.entity.Book;
 import myproject.bussiness.entity.LibraryBookCard;
 import myproject.bussiness.entity.User;
 import myproject.data.WriteAndReadData;
+import myproject.run.LibraryManagement;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -15,7 +16,7 @@ import static myproject.bussiness.mess.CheckValidate.*;
 import static myproject.bussiness.mess.Message.*;
 import static myproject.data.ConstantRegexAndUrl.*;
 
-public class LibraryBookCardImpl implements ILibraryBookCard<LibraryBookCard, String>,Comparator<LibraryBookCard> {
+public class LibraryBookCardImpl implements ILibraryBookCard<LibraryBookCard, String>, Comparator<LibraryBookCard> {
     public static WriteAndReadData writeAndReadData = new WriteAndReadData();
 
     @Override
@@ -53,7 +54,6 @@ public class LibraryBookCardImpl implements ILibraryBookCard<LibraryBookCard, St
             }
         }
     }
-
     @Override
     public boolean delete(String id) {                            //                  3. deletebyId(update status)
         int lBCard = Integer.parseInt(id);
@@ -77,19 +77,29 @@ public class LibraryBookCardImpl implements ILibraryBookCard<LibraryBookCard, St
                 break;
             }
         }
+//        for (LibraryBookCard lbcard : libraryBookCardList) {
+//            if (lbcard.getLibraryBookCardName() == null) {
+//                for (Book lbBook : lbcard.getBookArrayList()) {
+//                    for (Book book : bookList) {
+//                        if (lbBook.getBookId().equals(book.getBookId()) && book.getBookquantity() == 1) {
+//                        }
+//                    }
+//                }
+//            }
+//        }
+
         boolean result = writeToFile(libraryBookCardList);
+
         if (result && check) {
             return true;
         } else {
             return false;
         }
     }
-
     @Override
     public boolean writeToFile(List<LibraryBookCard> list) {                    //4. write to file
         return writeAndReadData.writeToFile(list, URL_LBCARD);
     }
-
     @Override
     public List<LibraryBookCard> readFromFile() {                               //5. read form file
         List<LibraryBookCard> libraryBookCardList = writeAndReadData.readFormFile(URL_LBCARD);
@@ -113,7 +123,6 @@ public class LibraryBookCardImpl implements ILibraryBookCard<LibraryBookCard, St
         }
         return lbCardByName;
     }
-
     @Override
     public LibraryBookCard inputData(Scanner sc) {                                 //7. input data
         List<LibraryBookCard> libraryBookCardList = readFromFile();
@@ -130,19 +139,18 @@ public class LibraryBookCardImpl implements ILibraryBookCard<LibraryBookCard, St
         do {
             System.out.println(DAYRETURNBOOK);
             lbCard.setReturnDate(dateValidate(sc));
-            if (lbCard.getReturnDate().compareTo(lbCard.getBorrowDate())<0){
+            if (lbCard.getReturnDate().compareTo(lbCard.getBorrowDate()) < 0) {
                 System.out.println("ngày trả phải lớn hơn ngày mượn!");
-            }else{
+            } else {
                 break;
             }
-        }while (true);
+        } while (true);
         System.out.println(ADDBOOKTOCARD);
         lbCard.setBookArrayList(bookListCard(sc));
         System.out.println("Chọn người đọc muốn tạo phiếu.");
         lbCard.setUser(userForCard(sc));
         return lbCard;
     }
-
     @Override
     public void displayData() {                                                     //8 display data
         Scanner sc = new Scanner(System.in);
@@ -162,13 +170,13 @@ public class LibraryBookCardImpl implements ILibraryBookCard<LibraryBookCard, St
             String borrowDay = df.format(lbCard.getBorrowDate());
             String returnDay = df.format(lbCard.getReturnDate());
             System.out.printf("|   1.MÃ THẺ: %-5d    2.TÊN THẺ: %-18s      3.NGƯỜI MƯỢN: %-20s      4.TRẠNG THÁI: %-10s |\n" +
-                              "|   5.NGÀY MƯỢN: %-10s                               6.NGÀY TRẢ: %-10s            7.NGÀY TRẢ THỰC TẾ: %-10s |\n",
+                            "|   5.NGÀY MƯỢN: %-10s                               6.NGÀY HẸN TRẢ: %-10s        7.NGÀY TRẢ THỰC TẾ: %-10s |\n",
                     lbCard.getLibraryBookCardId(), lbCard.getLibraryBookCardName(), lbCard.getUser().getUserName(), lbCard.getLibraryBookCardStatus(), borrowDay, returnDay, actualReturnDate);
             String strListBook = "|   8.DANH SÁCH SÁCH MƯỢN: ";
             for (Book book : lbCard.getBookArrayList()) {
-                strListBook+=book.getBookName()+". ";
+                strListBook += book.getBookName() + ". ";
             }
-            System.out.printf("%-103s                    |",strListBook);
+            System.out.printf("%-103s                    |", strListBook);
             System.out.println("\n+--------------------------------------------------------------------------------------------------------------------------+");
 
         }
@@ -224,6 +232,45 @@ public class LibraryBookCardImpl implements ILibraryBookCard<LibraryBookCard, St
             }
         }
         return userList;
+    }
+
+    public LibraryBookCard inputDataUser(Scanner sc, User user) {
+        LibraryBookCard lbCard = new LibraryBookCard();
+        List<LibraryBookCard> libraryBookCardList = readFromFile();
+        lbCard.setLibraryBookCardId(libraryBookCardList.size() + 1);
+        lbCard.setUser(user);
+        System.out.println(ADDBOOKTOCARD);
+        lbCard.setBookArrayList(bookListCard(sc));
+        BookImpl bookImpl = new BookImpl();
+        List<Book> bookList = bookImpl.readFromFile();
+        boolean check =false;
+        for (Book book : lbCard.getBookArrayList()) {
+            for (Book book1 : bookList) {
+                if (book.getBookId().equals(book1.getBookId())&&book1.getBookquantity()<0){
+                    check=true;
+                    break;
+                }
+            }
+        }
+        if (!check){
+            DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+            Date date = new Date();
+            String strName = df.format(date) + "-" + (int) ((Math.random()) * 1000);
+            lbCard.setLibraryBookCardName(strName);
+            lbCard.setBorrowDate(date);
+            do {
+                System.out.println(DAYRETURNBOOK);
+                lbCard.setReturnDate(dateValidate(sc));
+                if (lbCard.getReturnDate().compareTo(lbCard.getBorrowDate()) < 0) {
+                    System.out.println("ngày trả phải lớn hơn ngày mượn!");
+                } else {
+                    break;
+                }
+            } while (true);
+        }else {
+            System.out.println("Nhập số ngày muốn mượn (<=30 ngày)");
+        }
+        return lbCard;
     }
 
 

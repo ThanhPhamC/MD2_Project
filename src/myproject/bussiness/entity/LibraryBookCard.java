@@ -14,11 +14,13 @@ public class LibraryBookCard implements Serializable {
     private Date actualReturnDate;
     private ArrayList<Book> bookArrayList=new ArrayList<>();
     private String libraryBookCardStatus;
+    private int numberDate;
 
     public LibraryBookCard() {
     }
 
-    public LibraryBookCard(int libraryBookCardId, String libraryBookCardName, User user, Date borrowDate, Date returnDate, Date actualReturnDate, ArrayList<Book> bookArrayList, String libraryBookCardStatus) {
+    public LibraryBookCard(int libraryBookCardId, String libraryBookCardName, User user, Date borrowDate, Date returnDate,
+                           Date actualReturnDate, ArrayList<Book> bookArrayList, String libraryBookCardStatus, int numberDate) {
         this.libraryBookCardId = libraryBookCardId;
         this.libraryBookCardName = libraryBookCardName;
         this.user = user;
@@ -27,6 +29,15 @@ public class LibraryBookCard implements Serializable {
         this.actualReturnDate = actualReturnDate;
         this.bookArrayList = bookArrayList;
         this.libraryBookCardStatus = libraryBookCardStatus;
+        this.numberDate= numberDate;
+    }
+
+    public int getNumberDate() {
+        return numberDate;
+    }
+
+    public void setNumberDate(int numberDate) {
+        this.numberDate = numberDate;
     }
 
     public int getLibraryBookCardId() {

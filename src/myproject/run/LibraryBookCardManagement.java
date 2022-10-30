@@ -71,19 +71,17 @@ public class LibraryBookCardManagement {
     public static void editCard(Scanner sc) {                        //                  3. edit card
         List<LibraryBookCard> libraryBookCardList = lbCardImpl.readFromFile();
         System.out.println(EDITCARD);
-        System.out.println("Nhập vào mã của mục muốn cập nhập");
+        System.out.println("Nhập vào mã của thẻ muốn cập nhập");
         int lbCardId = Integer.parseInt(strValidate(sc, REGEXQUANTITY));
         boolean result = false;
         for (LibraryBookCard lbc : libraryBookCardList) {
             if (lbc.getLibraryBookCardId() == lbCardId) {
-                do {
                     System.out.println("Xác nhận cập nhập sách cho thẻ.\n" + "1. Có      2. Không.");
-                    int choice = choiceNumber(sc, 1, 2);
-                    if (choice == 1) {
+                    int choice1 = choiceNumber(sc, 1, 2);
+                    if (choice1 == 1) {
                         System.out.println(ADDBOOKTOCARD);
                         lbc.setBookArrayList(bookListCard(sc));
-                    } else break;
-                } while (true);
+                    }
                 System.out.println("Xác nhận cập nhập ngày trả sách cho thẻ.\n" + "1. Có      2. Không.");
                 int choice = choiceNumber(sc, 1, 2);
                 if (choice == 1) {
@@ -96,8 +94,9 @@ public class LibraryBookCardManagement {
                             break;
                         }
                     } while (true);
-                } else break;
+                }
                 result = lbCardImpl.update(lbc);
+                break;
             }
         }
         soutMess(result);

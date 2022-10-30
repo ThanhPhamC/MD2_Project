@@ -55,7 +55,6 @@ public class Catalogmanagement {
     public static void showListCatalog() {                                //1. show list catalog
         System.out.println(SHOWLISTCATALOG);
         catalogImpl.displayData();
-        System.out.println("\n\n");
     }
 
     public static void addNewCatalog(Scanner sc) {                         //2. add new catalog

@@ -157,8 +157,6 @@ public class BookImpl implements ILibrary<Book, String> {
                         "                      |     7.TÁC GIẢ: %-100s                |", book.getBookId(), book.getBookName(), book.getCatalog().getCatalogName(), book.getBookquantity(), book.getBookStates(), book.getBookStatus(), book.getListAuthor());
                 System.out.println("\n                      +------------------------------------------------------------------------------------------------------------------------------------+");
             }
-
-
         }
 
     }

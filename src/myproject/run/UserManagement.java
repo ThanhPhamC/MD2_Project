@@ -10,6 +10,8 @@ import myproject.bussiness.mess.Message;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -36,9 +38,11 @@ public class UserManagement {
                 count++;
             }
         }
-        String str = "";
+        String str ;
         if (count != 0) {
             str = "(" + count + ")";
+        }else {
+            str="";
         }
 
         boolean checkout = true;
@@ -60,8 +64,25 @@ public class UserManagement {
                             "| | 1.DANH SÁCH SÁCH ||  2.ĐĂNG KÍ MƯỢN SÁCH    |   3.LỊCH SỬ MƯỢN SÁCH   |  4.ĐỔI THÔNG TIN CÁ NHÂN   |      5.THÔNG BÁO%3s       |        6.THOÁT        |\n" +
                             "| +------------------+|                         |                         |                            |                           |                       |\n" +
                             "+----------------------------------------------------------------------------------------------------------------------------------------------------------+\n", user.getUserName().toUpperCase(), str);
+                    BookImpl bookImpl = new BookImpl();
+                    List<Book> bookList = bookImpl.readFromFile();
+                    if (bookList == null) {
+                        System.out.println(ERRORNULL);
+                    } else {
+                        System.out.print("                      |         MÃ SÁCH         |        TÊN SÁCH         |                                   TÁC GIẢ                                      |");
+                        System.out.println("\n                      +------------------------------------------------------------------------------------------------------------------------------------+");
+                        for (Book book : bookList) {
+                            String authorName = "";
+                            for (String name : book.getListAuthor()) {
+                                authorName+=name+". ";
+                            }
+                            if (!book.getBookStatus().equals(STATUS3)) {
+                                System.out.printf("                      |        %-6S               %-25S     %-60s             |\n", book.getBookId(), book.getBookName(), authorName);
+                            }
+                        }
+                        System.out.println("                      +------------------------------------------------------------------------------------------------------------------------------------+");
 
-                    bookImpl.displayData();
+                    }
                     System.out.println("\n\n");
                     break;
                 case 2:
@@ -93,15 +114,16 @@ public class UserManagement {
                         }
                         String borrowDay = df.format(lbCard.getBorrowDate());
                         String returnDay = df.format(lbCard.getReturnDate());
-                        System.out.printf("|   1.MÃ THẺ: %-5d    2.TÊN THẺ: %-18s      3.NGƯỜI MƯỢN: %-20s      4.TRẠNG THÁI: %-10s |\n" +
-                                        "|   5.NGÀY MƯỢN: %-10s                               6.NGÀY TRẢ: %-10s            7.NGÀY TRẢ THỰC TẾ: %-10s |\n",
-                                lbCard.getLibraryBookCardId(), lbCard.getLibraryBookCardName(), lbCard.getUser().getUserName(), lbCard.getLibraryBookCardStatus(), borrowDay, returnDay, actualReturnDate);
+                        System.out.printf("|   1.MÃ THẺ: %-5d                 2.TÊN THẺ: %-18s      3.TRẠNG THÁI: %-10s                             |\n" +
+                                        "|   5.NGÀY MƯỢN: %-10s         6.NGÀY HẸN TRẢ: %-10s            7.NGÀY TRẢ THỰC TẾ: %-10s                    |\n",
+                                lbCard.getLibraryBookCardId(), lbCard.getLibraryBookCardName(), lbCard.getLibraryBookCardStatus(), borrowDay, returnDay, actualReturnDate);
+
                         String strListBook = "|   8.DANH SÁCH SÁCH MƯỢN: ";
                         for (Book book : lbCard.getBookArrayList()) {
                             strListBook += book.getBookName() + ". ";
                         }
-                        System.out.printf("%-103s                    |", strListBook);
-                        System.out.println("\n+--------------------------------------------------------------------------------------------------------------------------+");
+                        System.out.printf("%-103s                     |", strListBook);
+                        System.out.println("\n+---------------------------------------------------------------------------------------------------------------------------+");
 
                     }
                     break;
@@ -114,8 +136,41 @@ public class UserManagement {
                             "|  1.DANH SÁCH SÁCH   |  2.ĐĂNG KÍ MƯỢN SÁCH |  3.LỊCH SỬ MƯỢN SÁCH   |  | 4.ĐỔI THÔNG TIN CÁ NHÂN | |     5.THÔNG BÁO%3s      |        6.THOÁT            |\n" +
                             "|                     |                      |                        |  +-------------------------+ |                         |                           |                              |\n" +
                             "+----------------------------------------------------------------------------------------------------------------------------------------------------------+\n", user.getUserName().toUpperCase(), str);
+                    String status ;
+                    if (user.isUserStatus()) {
+                        status = STATUS1;
+                    }else {
+                        status = STATUS3;
+                    }
+                    DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+                    String startDay = df.format(user.getLibraryCardStartDay());
+                    String endDay = df.format(user.getLibraryCardEndDay());
+                    System.out.printf(
+                            "|     1.MÃ NGƯỜI DÙNG: %-5d          2.TÊN ĐẦY ĐỦ: %-20s    3.SỐ ĐIỆN THOẠI: %-11d                       |\n" +
+                                    "|     4.ĐỊA CHỈ NHÀ: %-47s        5.EMAIL: %-23s                   |\n" +
+                                    "|     6.NGÀY MUA THẺ: %-10s      7.NGÀY HẾT HẠN THẺ: %-10s        8.TRẠNG THÁI: %-16s                     |\n" +
+                                    "+------------------------------------------------------------------------------------------------------------------------------+\n",
+                            user.getUserId(), user.getUserName(), user.getPhonenumber(),user.getUserAdress(),user.getUserEmail(),startDay, endDay, status);
                     List<User> userList = userImpl.readFromFile();
-
+                    do {
+                        System.out.println("Nhập mật khẩu cũ:");
+                        String oldPass = strValidate(sc, REGEXPASS);
+                        System.out.println("Nhập mật khẩu mới:");
+                        String newPass =strValidate(sc, REGEXPASS);
+                        System.out.println("Nhập lại mật khẩu mới:");
+                        String checkNewPass = strValidate(sc, REGEXPASS);
+                        if (user.getUserPass().equals(oldPass)) {
+                            if (newPass.equals(checkNewPass)) {
+                                user.setUserPass(newPass);
+                                System.out.println("Cập nhập thành công");
+                            } else {
+                                System.out.println("Không trùng khớp");
+                            }
+                            break;
+                        } else {
+                            System.out.println("Mật khẩu cũ không đúng");
+                        }
+                    } while (true);
                     System.out.println("Bạn có muốn thay mới số điện thoại không?\n" +
                             "1. Có      2. Không ");
                     int choice1 = choiceNumber(sc, 1, 2);
@@ -123,13 +178,13 @@ public class UserManagement {
                         do {
                             System.out.println(PHONENUMBER);
                             user.setPhonenumber(Integer.parseInt(strValidate(sc, REGEXPHONE)));
-                             boolean check2 =checkphonenumber(user.getPhonenumber());
-                            if (check2){
+                            boolean check2 = checkphonenumber(user.getPhonenumber());
+                            if (check2) {
                                 System.out.println(PHONEERR);
-                            }else{
+                            } else {
                                 break;
                             }
-                        }while (true);
+                        } while (true);
                     }
 
                     System.out.println("Bạn có muốn thay mới địa chỉ không?\n" +
@@ -145,25 +200,25 @@ public class UserManagement {
                     if (choi == 1) {
                         do {
                             System.out.println(Message.EMAIL);
-                            user.setUserEmail(strValidate(sc,REGEXEMAIL));
-                            boolean check2 =checkEmail(user.getUserEmail());
-                            if (check2){
+                            user.setUserEmail(strValidate(sc, REGEXEMAIL));
+                            boolean check2 = checkEmail(user.getUserEmail());
+                            if (check2) {
                                 System.out.println(EMAILERR);
-                            }else{
+                            } else {
                                 break;
                             }
-                        }while (true);
+                        } while (true);
                     }
 
-                for (int i = 0; i < userList.size(); i++) {
-                    if (userList.get(i).getUserId()==user.getUserId()){
-                        userList.set(i,user);
-                        break;
+                    for (int i = 0; i < userList.size(); i++) {
+                        if (userList.get(i).getUserId() == user.getUserId()) {
+                            userList.set(i, user);
+                            break;
+                        }
                     }
-                }
-                boolean check= userImpl.writeToFile(userList);
-                soutMess(check);
-                break;
+                    boolean check = userImpl.writeToFile(userList);
+                    soutMess(check);
+                    break;
                 case 5:
                     System.out.printf("\n+----------------------------------------------------------------------------------------------------------------------------------------------------------+\n" +
                             "|                                                                                                                                                          |\n" +
@@ -173,9 +228,33 @@ public class UserManagement {
                             "|  1.DANH SÁCH SÁCH   |  2.ĐĂNG KÍ MƯỢN SÁCH |  3.LỊCH SỬ MƯỢN SÁCH   |  4.ĐỔI THÔNG TIN CÁ NHÂN  |  |    5.THÔNG BÁO%3s      | |       6.THOÁT            |\n" +
                             "|                     |                      |                        |                           |  +------------------------+ |                          |                           |                              |\n" +
                             "+----------------------------------------------------------------------------------------------------------------------------------------------------------+\n", user.getUserName().toUpperCase(), str);
-                    System.out.println(" Ơ KÌA TRẢ SÁCH ĐI.\n" +
-                            "TRẢ SÁCH ĐI Ơ KÌA.\n" +
-                            "ĐI TRẢ SÁCH Ơ KÌA.");
+
+                    for (LibraryBookCard lbCard : libraryBookCardList) {
+                        if (lbCard.getUser().getUserId() == user.getUserId() && lbCard.getLibraryBookCardStatus().equals(Message.LBCARDSTATUS2)) {
+                            Date date = new Date();
+                            String mess = gapday(lbCard.getReturnDate(), date);
+                            String actualReturnDate = "Chưa trả.";
+                            DateFormat dfm = new SimpleDateFormat("dd/MM/yyyy");
+                            if (lbCard.getActualReturnDate() != null) {
+                                actualReturnDate = dfm.format(lbCard.getActualReturnDate());
+                            }
+                            String borrowDay = dfm.format(lbCard.getBorrowDate());
+                            String returnDay = dfm.format(lbCard.getReturnDate());
+                            System.out.printf("|   1.MÃ THẺ: %-5d    2.TÊN THẺ: %-18s      3.NGƯỜI MƯỢN: %-20s      4.TRẠNG THÁI: %-10s |\n" +
+                                            "|   5.NGÀY MƯỢN: %-10s                               6.NGÀY TRẢ: %-10s            7.Phiếu chậm hạn trả %-7s . |\n",
+                                    lbCard.getLibraryBookCardId(), lbCard.getLibraryBookCardName(), lbCard.getUser().getUserName(), lbCard.getLibraryBookCardStatus(), borrowDay, returnDay, mess.toUpperCase());
+
+                            String strListBook = "|   8.DANH SÁCH SÁCH MƯỢN: ";
+                            for (Book book : lbCard.getBookArrayList()) {
+                                strListBook += book.getBookName() + ". ";
+                            }
+                            System.out.printf("%-103s                    |", strListBook);
+                            System.out.println("\n+--------------------------------------------------------------------------------------------------------------------------+");
+
+
+                        }
+                    }
+
                     break;
                 case 6:
                     checkout = false;
@@ -185,4 +264,12 @@ public class UserManagement {
 
     }
 
+    public static String gapday(Date date1, Date date2) {
+        String dayreturn;
+        long valuedate1 = date1.getTime();
+        long valuedate2 = date2.getTime();
+        long value = Math.abs(valuedate1 - valuedate2);
+        long valueday = value / (24 * 60 * 60 * 1000);
+        return dayreturn = valueday + " ngày";
+    }
 }

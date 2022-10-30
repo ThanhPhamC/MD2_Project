@@ -160,9 +160,8 @@ public class CatalogImpl implements ICatalog<Catalog, String>, Comparator<Catalo
                     status = STATUS3;
                 }
                 System.out.printf("                                 |            %-10d      |                %-30s    |         %-20s            |\n", catalog.getCatalogId(), catalog.getCatalogName(), status);
-                System.out.println("                                 +-------------------------------------------------------------------------------------------------------------------------+");
-
             }
+            System.out.println( "                                 +-------------------------------------------------------------------------------------------------------------------------+");
         }
     }
 

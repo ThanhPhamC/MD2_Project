@@ -212,6 +212,7 @@ public class UserImpl implements IUser<User, String> {
                         "|     6.NGÀY MUA THẺ: %-10s      7.NGÀY HẾT HẠN THẺ: %-10s        8.TRẠNG THÁI: %-16s                           |\n" +
                         "+------------------------------------------------------------------------------------------------------------------------------------+\n",
                         user.getUserId(), user.getUserName(), user.getPhonenumber(),user.getUserAdress(),user.getUserEmail(),startDay, endDay, status);
+
             }
         }
     }
